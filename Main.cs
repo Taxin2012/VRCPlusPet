@@ -17,7 +17,7 @@ namespace VRC_Minus_Pet
     public static class BuildInfo
     {
         public const string Name = "VRC_Minus_Pet";
-        public const string Description = "Removes VRC+ advertising and can replacese default pet and his phrages (if needed).";
+        public const string Description = "Removes VRC+ advertising and can replace default pet and his phrages (if needed).";
         public const string Author = "Taxin2012";
         public const string Company = null;
         public const string Version = "1.0.0";
