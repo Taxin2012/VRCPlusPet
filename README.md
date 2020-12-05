@@ -26,7 +26,7 @@ Removes VRC+ advertising and can replace default pet and his phrases (if needed)
 <h3>How to replace Pet?</h3>
 
   > Only for peoples who know how to build project. <br>
-  > Mod currently supports only ".png" images.
+  > Mod currently supports only ".png" images. <br>
   > Full AssetBundles build guide: [*Click Me*](https://docs.unity3d.com/Manual/AssetBundles-Workflow.html)
   
   1) Create New Project in Unity3D;
