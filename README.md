@@ -68,5 +68,8 @@ Just drop "VRC_Minus_Pet.dll" to "VRChat/Mods" folder.
   
   7) Click right mouse button on folder "VRCMP" and find "Build AssetBundles" variant, select it, after building, find folder "AssetBundles", copy "vrcmp" file and replace same file in the Project Resources. <br><br>
 
+<h3>TODO</h3>
+
+1) Load image for pet from URL.
 
 This mod based on ["VRC-Minus"](https://github.com/HerpDerpinstine/VRC-Minus).
