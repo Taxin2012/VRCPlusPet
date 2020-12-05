@@ -1,5 +1,5 @@
 # VRC-Minus-Pet
-VRChat Mod that uses ["MelonLoader"](https://github.com/HerpDerpinstine/MelonLoader). <br>
+VRChat Mod that uses [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader). <br>
 Removes VRC+ advertising and can replace default pet and his phrages (if needed).
  
 <h3>Mod uses launch parameters:</h3>
