@@ -1,5 +1,5 @@
 # VRC-Minus-Pet
-VRChat Mod that uses MelonLoader. <br>
+VRChat Mod that uses ["MelonLoader"](https://github.com/HerpDerpinstine/MelonLoader). <br>
 Removes VRC+ advertising and can replace default pet and his phrages (if needed).
  
 <h3>Mod uses launch parameters:</h3>
@@ -25,6 +25,7 @@ Removes VRC+ advertising and can replace default pet and his phrages (if needed)
 
   > Only for peoples who know how to build project. <br>
   > Mod currently supports only ".png" images.
+  > Full AssetBundles build guide: [*Click Me*](https://docs.unity3d.com/Manual/AssetBundles-Workflow.html)
   
   1) Create New Project in Unity3D;
   2) Create a folder with name "VRCMP", rename an image that you want to use as pet to "pet.png" and put to created folder;
