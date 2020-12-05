@@ -17,7 +17,7 @@ namespace VRC_Minus_Pet
     public static class BuildInfo
     {
         public const string Name = "VRC_Minus_Pet";
-        public const string Description = "Removes VRC+ advertising and can replace default pet and his phrages (if needed).";
+        public const string Description = "Removes VRC+ advertising and can replacese default pet and his phrases (if needed).";
         public const string Author = "Taxin2012";
         public const string Company = null;
         public const string Version = "1.0.0";
@@ -29,7 +29,7 @@ namespace VRC_Minus_Pet
         static bool
             removeAdverts = true,
             useCustomPet = false,
-            useCustomPhrages = false;
+            useCustomPhrases = false;
 
         static Il2CppSystem.Collections.Generic.List<string> petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>();
@@ -103,7 +103,7 @@ namespace VRC_Minus_Pet
         {
             __instance.oncePerWorld = false;
 
-            if (useCustomPhrages)
+            if (useCustomPhrases)
             {
                 if (petNormalPhrases.Count > 0)
                     __instance.normalPhrases = petNormalPhrases;
@@ -149,8 +149,8 @@ namespace VRC_Minus_Pet
                 }
                 else if (arg == "-mp.phs")
                 {
-                    MelonLogger.Log("-mp.phs | Pet phrages will be replaced");
-                    useCustomPhrages = true;
+                    MelonLogger.Log("-mp.phs | Pet phrases will be replaced");
+                    useCustomPhrases = true;
                 }
             }
 
@@ -167,7 +167,7 @@ namespace VRC_Minus_Pet
 
         public override void VRChat_OnUiManagerInit()
         {
-            if (useCustomPhrages)
+            if (useCustomPhrases)
                 SetupMenuPetPhrases();
 
             if (removeAdverts)
