@@ -8,7 +8,7 @@ Removes VRC+ advertising and can replace default pet and his phrages (if needed)
 | --- | --- |
 | -mp.ads | The mod will not touch any VRC+ advertising |
 | -mp.pet | Pet will be replaced |
-| -mp.phs | Pet phrages will be replaced |
+| -mp.phs | Pet phrases will be replaced |
 
 
 <h3>How to replace Phrases for Pet?</h3>
