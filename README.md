@@ -31,8 +31,9 @@ Removes VRC+ advertising and can replace default pet and his phrases (if needed)
   
   1) Create New Project in Unity3D;
   2) Create a folder with name "VRCMP", rename an image that you want to use as pet to "pet.png" and put to created folder;
-  3) Click on image, find "AssetBundle" sign in bottom of Inspector, click on it and click New (if no "vrcmp" in menu), enter "vrcmp";
-  4) Set same "AssetBundle" name for "VRCMP" folder;
+  3) Click on image, SET "Texture Type" to "Sprite (2D and UI)" click "Apply" in bottom of Inspector.
+  4) Find "AssetBundle" sign in bottom of Inspector, click on it and click New (if no "vrcmp" in menu, else select it), enter "vrcmp";
+  5) Set same "AssetBundle" name for "VRCMP" folder;
   
   6) Create a folder called "Editor" in the "Assets" folder, create a script with the following contents in that folder:
 
