@@ -1,6 +1,12 @@
 # VRC-Minus-Pet
 VRChat Mod that uses [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader). <br>
 Removes VRC+ advertising and can replace default pet and his phrases (if needed).
+
+<h3>How to install:</h3>
+
+> VRChat game folder: Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files.
+
+Just drop "VRC_Minus_Pet.dll" to "VRChat/Mods" folder.
  
 <h3>Mod uses launch options:</h3>
 
@@ -16,7 +22,7 @@ Removes VRC+ advertising and can replace default pet and his phrases (if needed)
 <h3>How to replace Phrases for Pet?</h3>
 
   1. Use "-mp.phs" option, run VRChat once;
-  2. Open VRChat game folder (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
+  2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Change files in "UserData/Custom_Menu_Pet/".
 
   > "normal_phrases.txt" - Random phrases. <br>
