@@ -1,6 +1,6 @@
 # VRC-Minus-Pet
 VRChat Mod that uses [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader). <br>
-Removes VRC+ advertising and can replace default pet and his phrages (if needed).
+Removes VRC+ advertising and can replace default pet and his phrases (if needed).
  
 <h3>Mod uses launch parameters:</h3>
 
@@ -17,7 +17,7 @@ Removes VRC+ advertising and can replace default pet and his phrages (if needed)
   2. Open VRChat game folder;
   3. Change files in "UserData/Custom_Menu_Pet/".
 
-  > "normal_phrases.txt" - Random phrages. <br>
+  > "normal_phrases.txt" - Random phrases. <br>
   > "poke_phrases.txt" - Phrases when poking.
 
 
