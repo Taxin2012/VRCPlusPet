@@ -2,6 +2,8 @@
 VRChat Mod that uses [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader). <br>
 Removes VRC+ advertising and can replace default pet and his phrases (if needed).
 
+![Natsuki](https://i.ibb.co/hDBHWQq/2020-12-05-064641.png)
+
 <h3>How to install:</h3>
 
 > VRChat game folder: Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files.
