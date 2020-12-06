@@ -70,6 +70,6 @@ Just drop "VRC_Minus_Pet.dll" to "VRChat/Mods" folder.
 
 <h3>TODO</h3>
 
-1) Load image for pet from URL. <br><br>
+1) Load image for pet from local files. <br><br>
 
 This mod based on ["VRC-Minus"](https://github.com/HerpDerpinstine/VRC-Minus).
