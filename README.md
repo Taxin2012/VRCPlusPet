@@ -1,6 +1,6 @@
 # VRC-Minus-Pet
 VRChat Mod that uses [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader). <br>
-Removes VRC+ advertising (w/o "Early Supporter Badge" and "Supporter Badge") and can replace default pet and his phrases (if needed).
+Removes VRC+ advertising (w/o removing "Early Supporter Badge" and "Supporter Badge") and can replace default pet and his phrases (if needed).
 
 ![Natsuki](https://i.ibb.co/hDBHWQq/2020-12-05-064641.png)
 
