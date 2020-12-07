@@ -2,13 +2,13 @@
 VRChat Mod that uses [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader). <br>
 Hiding VRC+ advertising, can replace default pet, his phrases and poke sounds. <br>
 
-<h3>Main Features:<h3>
+<h3>Main Features:</h3>
  
- 1. All features can be disabled;
- 2. VRC+ advertising hiding (w/o hiding "Early Supporter Badge" and "Supporter Badge");
- 3. Custom pet image;
- 4. Custom pet phrases;
- 5. Custom pet poke sounds. <br>
+ * All features can be disabled;
+ * VRC+ advertising hiding (w/o hiding "Early Supporter Badge" and "Supporter Badge");
+ * Custom pet image;
+ * Custom pet phrases;
+ * Custom pet poke sounds. <br>
 
 ![Natsuki](https://i.ibb.co/sbDK5kG/image.png)
 
