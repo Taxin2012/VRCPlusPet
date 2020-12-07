@@ -16,7 +16,7 @@ namespace VRCPlusPet
     public static class BuildInfo
     {
         public const string Name = "VRCPlusPet";
-        public const string Description = "Hiding VRC+ advertising, can replace default pet, his phrases and poke sounds.";
+        public const string Description = "Hides VRC+ advertising, can replace default pet, his phrases and poke sounds.";
         public const string Author = "Taxin2012";
         public const string Company = null;
         public const string Version = "1.0.1";
