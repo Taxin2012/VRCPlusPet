@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Collections;
 
 using Harmony;
 using MelonLoader;
@@ -15,7 +16,7 @@ namespace VRCPlusPet
     public static class BuildInfo
     {
         public const string Name = "VRCPlusPet";
-        public const string Description = "Removes VRC+ advertising, can replace default pet, his phrases and poke sounds (if needed).";
+        public const string Description = "Hiding VRC+ advertising, can replace default pet, his phrases and poke sounds.";
         public const string Author = "Taxin2012";
         public const string Company = null;
         public const string Version = "1.0.1";
@@ -28,6 +29,7 @@ namespace VRCPlusPet
         static string
             configPath = "VRCPlusPet_Config",
             fullconfigPath = Path.Combine(MelonLoaderBase.UserDataPath, configPath);
+            
         static bool removeAdverts = true;
         static Il2CppSystem.Collections.Generic.List<string> petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>();
@@ -88,6 +90,61 @@ namespace VRCPlusPet
 
                 if (imageComponent != null)
                     imageComponent.sprite = petSprite;
+            }
+        }
+        
+        static IEnumerator SetupAudioFiles()
+        {
+            foreach (string fileName in Directory.GetFiles(SetupConfigFiles("audio", ref emptyList, true), "*.*", SearchOption.TopDirectoryOnly))
+            {
+                if (fileName.Contains(".ogg") || fileName.Contains(".wav"))
+                {
+                    WWW www = new WWW(Path.Combine("file://", fileName));
+                    yield return www;
+
+                    AudioClip audioClip = www.GetAudioClip();
+                    audioClip.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+
+                    audioClips.Add(audioClip);
+                }
+                else
+                    MelonLogger.LogWarning("Option \"aud\" | File has wrong audio format (Only .ogg/.wav are supported), will be ignored");
+            }
+
+            if (audioClips.Count == 0)
+                MelonLogger.LogWarning(string.Format("Option \"aud\" | Audio files not found (UserData/{0}/audio/)", configPath));
+        }
+
+        static string SetupConfigFiles(string fileName, ref Il2CppSystem.Collections.Generic.List<string> phrasesArray, bool isDirectory = false)
+        {
+            if (!Directory.Exists(fullconfigPath))
+                Directory.CreateDirectory(fullconfigPath);
+
+            string filePath = Path.Combine(fullconfigPath, fileName);
+
+            if (isDirectory)
+            {
+                if (!Directory.Exists(filePath))
+                    Directory.CreateDirectory(filePath);
+
+                return filePath;
+            }
+
+            if (File.Exists(filePath))
+            {
+                if (phrasesArray != null)
+                    foreach (string line in File.ReadAllLines(filePath))
+                        if (!string.IsNullOrEmpty(line))
+                            phrasesArray.Add(line);
+
+                return filePath;
+            }
+            else
+            {
+                if (phrasesArray != null)
+                    File.Create(filePath);
+
+                return null;
             }
         }
 
@@ -156,7 +213,7 @@ namespace VRCPlusPet
             }
 
             if (!optionFound)
-                MelonLogger.Log("No options found (example: -mp.ads.pet.phs)");
+                MelonLogger.Log("No options found (example: -mp.ads.pet.phs.aud)");
 
             MelonLogger.Log(spaces);
 
@@ -166,65 +223,10 @@ namespace VRCPlusPet
             Patch(typeof(VRCPlusThankYou).GetMethod("OnEnable"), GetLocalPatch("SetupMenuPetPatch"), null);
         }
 
-        static System.Collections.IEnumerator SetupAudioFiles()
-        {
-            foreach (string fileName in Directory.GetFiles(SetupConfigFiles("audio", ref emptyList, true)))
-            {
-                if (fileName.Contains(".ogg") || fileName.Contains(".wav"))
-                {
-                    WWW www = new WWW(Path.Combine("file://", fileName));
-                    yield return www;
-
-                    AudioClip audioClip = www.GetAudioClip();
-                    audioClip.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-
-                    audioClips.Add(audioClip);
-                }
-                else
-                    MelonLogger.LogWarning("Option \"aud\" | File has wrong audio format (Only .ogg/.wav are supported), will be ignored");
-            }
-
-            if (audioClips.Count == 0)
-                MelonLogger.LogWarning(string.Format("Option \"aud\" | Audio files not found (UserData/{0}/audio/)", configPath));
-        }
-
         public override void VRChat_OnUiManagerInit()
         {
             if (removeAdverts)
                 InitUI();
-        }
-
-        static string SetupConfigFiles(string fileName, ref Il2CppSystem.Collections.Generic.List<string> phrasesArray, bool isDirectory = false)
-        {
-            if (!Directory.Exists(fullconfigPath))
-                Directory.CreateDirectory(fullconfigPath);
-
-            string filePath = Path.Combine(fullconfigPath, fileName);
-
-            if (isDirectory)
-            {
-                if (!Directory.Exists(filePath))
-                    Directory.CreateDirectory(filePath);
-
-                return filePath;
-            }
-
-            if (File.Exists(filePath))
-            {
-                if (phrasesArray != null)
-                    foreach (string line in File.ReadAllLines(filePath))
-                        if (!string.IsNullOrEmpty(line))
-                            phrasesArray.Add(line);
-
-                return filePath;
-            }
-            else
-            {
-                if (phrasesArray != null)
-                    File.Create(filePath);
-
-                return null;
-            }
         }
     }
 }
