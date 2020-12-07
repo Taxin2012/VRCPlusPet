@@ -10,7 +10,7 @@ Hiding VRC+ advertising, can replace default pet, his phrases and poke sounds. <
  * Custom pet phrases;
  * Custom pet poke sounds. <br>
 
-![Natsuki](https://i.ibb.co/sbDK5kG/image.png)
+![Natsuki preview](https://i.ibb.co/vQ3WrQw/image.png)
 
 <h3>How to install:</h3>
 
