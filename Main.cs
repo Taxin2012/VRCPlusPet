@@ -98,7 +98,7 @@ namespace VRCPlusPet
 
             foreach (string arg in Environment.GetCommandLineArgs())
             {
-                if (arg.StartsWith("-mp."))
+                if (arg.StartsWith("-pp."))
                 {
                     optionFound = true;
 
