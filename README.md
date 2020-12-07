@@ -33,7 +33,7 @@ If you want to remove some options - then just do it: "-pp.pet.phs". <br>
   3. Change files in "UserData/VRCPlusPet_Config/" folder.
 
   > "normalPhrases.txt" - Random phrases. <br>
-  > "pokePhrases.txt" - Phrases when poking.
+  > "pokePhrases.txt" - Random Phrases when poking.
 
 
 <h3>How to replace Pet?</h3>
