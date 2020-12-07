@@ -19,7 +19,7 @@ namespace VRCPlusPet
         public const string Author = "Taxin2012";
         public const string Company = null;
         public const string Version = "1.0.1";
-        public const string DownloadLink = "https://github.com/Taxin2012/VRC-Minus-Pet";
+        public const string DownloadLink = "https://github.com/Taxin2012/VRCPlusPet";
     }
 
     public class VRCPlusPet : MelonMod
