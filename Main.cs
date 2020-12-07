@@ -2,91 +2,55 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Collections;
 
 using Harmony;
 using MelonLoader;
-using UnhollowerRuntimeLib;
 using MethodBase = System.Reflection.MethodBase;
 
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace VRC_Minus_Pet
+namespace VRCPlusPet
 {
     public static class BuildInfo
     {
-        public const string Name = "VRC_Minus_Pet";
-        public const string Description = "Removes VRC+ advertising and can replacese default pet and his phrages (if needed).";
+        public const string Name = "VRCPlusPet";
+        public const string Description = "Removes VRC+ advertising, can replace default pet, his phrases and poke sounds (if needed).";
         public const string Author = "Taxin2012";
         public const string Company = null;
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
         public const string DownloadLink = "https://github.com/Taxin2012/VRC-Minus-Pet";
     }
 
-    public class VRC_Minus_Pet : MelonMod
+    public class VRCPlusPet : MelonMod
     {
-        static bool
-            removeAdverts = true,
-            useCustomPet = false,
-            useCustomPhrages = false;
-
+        static string configPath = Path.Combine(MelonLoaderBase.UserDataPath, "_Pet_Config");
+        static bool removeAdverts = true;
         static Il2CppSystem.Collections.Generic.List<string> petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>();
-
-        static HarmonyInstance datHarmonyInstance = HarmonyInstance.Create("VRC_Minus_Pet");
-        static AssetBundle modAssetBundle;
+        static Il2CppSystem.Collections.Generic.List<string> emptyList = null;
+        static Il2CppSystem.Collections.Generic.List<AudioClip> audioClips = new Il2CppSystem.Collections.Generic.List<AudioClip>();
+        static HarmonyInstance modHarmonyInstance = HarmonyInstance.Create(BuildInfo.Name);
         static Sprite petSprite;
 
         static void Patch(MethodBase TargetMethod, HarmonyMethod Prefix, HarmonyMethod Postfix)
         {
-            datHarmonyInstance.Patch(TargetMethod, Prefix, Postfix);
+            modHarmonyInstance.Patch(TargetMethod, Prefix, Postfix);
         }
 
-        static HarmonyMethod GetLocalPatch(string name) {
-            return new HarmonyMethod(typeof(VRC_Minus_Pet).GetMethod(name, BindingFlags.Static | BindingFlags.NonPublic));
+        static HarmonyMethod GetLocalPatch(string name)
+        {
+            return new HarmonyMethod(typeof(VRCPlusPet).GetMethod(name, BindingFlags.Static | BindingFlags.NonPublic));
         }
 
         static void InitUI()
         {
-            //VRC-Minus
-            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content/UserIconTab")); // VRC+ User Icons New Label
-            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content/VRC+PageTab")); // Main Menu VRC+ Tab
-            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter")); // User Info VRC+ Supporter Button
-            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites")); // Avatars Get More Favorites Button
+            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content/UserIconTab"));
+            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content/VRC+PageTab"));
+            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter"));
+            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites"));
         }
 
-        static IEnumerator PostInitUI()
-        {
-            while (VRCUiManager.prop_VRCUiManager_0 == null)
-            {
-                yield return new WaitForSeconds(2f);
-            }
-
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("VRC_Minus_Pet.Resources.vrcmp"))
-            using (var tempStream = new MemoryStream((int)stream.Length))
-            {
-                stream.CopyTo(tempStream);
-
-                modAssetBundle = AssetBundle.LoadFromMemory_Internal(tempStream.ToArray(), 0);
-                modAssetBundle.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-            }
-
-            petSprite = modAssetBundle.LoadAsset_Internal("Assets/VRCMP/pet.png", Il2CppType.Of<Sprite>()).Cast<Sprite>();
-            petSprite.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-
-            yield break;
-        }
-
-        static IEnumerator CheckAndSetSprite(Sprite sprite, Image imageComp)
-        {
-            while (sprite == null)
-                yield return new WaitForSeconds(2f);
-
-            imageComp.sprite = sprite;
-        }
-
-        //VRC-Minus
         static bool ShortcutMenuPatch(ShortcutMenu __instance)
         {
             __instance.vrcplusThankYou?.SetActive(true);
@@ -103,29 +67,24 @@ namespace VRC_Minus_Pet
         {
             __instance.oncePerWorld = false;
 
-            if (useCustomPhrages)
-            {
-                if (petNormalPhrases.Count > 0)
-                    __instance.normalPhrases = petNormalPhrases;
+            if (petNormalPhrases.Count > 0)
+                __instance.normalPhrases = petNormalPhrases;
 
-                if (petPokePhrases.Count > 0)
-                    __instance.pokePhrases = petPokePhrases;
-            }
+            if (petPokePhrases.Count > 0)
+                __instance.pokePhrases = petPokePhrases;
+
+            if (audioClips.Count > 0)
+                __instance.sounds = audioClips;
 
             __instance.gameObject.SetActive(true);
             __instance.transform.parent.gameObject.SetActive(true);
 
-            if (useCustomPet)
+            if (petSprite != null)
             {
-                Transform character = __instance.transform.FindChild("Character");
+                Image imageComponent = __instance.transform.FindChild("Character")?.GetComponent<Image>();
 
-                if (character != null)
-                {
-                    Image imageComp = character.GetComponent<Image>();
-
-                    if (imageComp != null)
-                        MelonCoroutines.Start(CheckAndSetSprite(petSprite, imageComp));
-                }
+                if (imageComponent != null)
+                    imageComponent.sprite = petSprite;
             }
         }
 
@@ -135,24 +94,66 @@ namespace VRC_Minus_Pet
             MelonLogger.Log(spaces);
             MelonLogger.Log(string.Format("Initializing {0}...", BuildInfo.Name));
 
+            bool optionFound = false;
+
             foreach (string arg in Environment.GetCommandLineArgs())
             {
-                if (arg == "-mp.ads")
+                if (arg.StartsWith("-mp."))
                 {
-                    MelonLogger.Log("-mp.ads | Advertising will stay");
-                    removeAdverts = false;
-                }
-                else if (arg == "-mp.pet")
-                {
-                    MelonLogger.Log("-mp.pet | Pet will be replaced");
-                    useCustomPet = true;
-                }
-                else if (arg == "-mp.phs")
-                {
-                    MelonLogger.Log("-mp.phs | Pet phrages will be replaced");
-                    useCustomPhrages = true;
+                    optionFound = true;
+
+                    if (arg.Contains(".ads"))
+                    {
+                        MelonLogger.Log("Found \"ads\" | Advertising will stay");
+                        removeAdverts = false;
+                    }
+
+                    if (arg.Contains(".pet"))
+                    {
+                        MelonLogger.Log("Found \"pet\" | Pet will be replaced");
+
+                        string texturePath = SetupConfigFiles("pet.png", ref emptyList);
+
+                        if (texturePath == null)
+                        {
+                            MelonLogger.LogWarning(string.Format("Option \"pet\" | Image not found ({0}/pet.png)", configPath));
+                            continue;
+                        }
+
+                        Texture2D newTexture = new Texture2D(2, 2);
+                        byte[] imageByteArray = File.ReadAllBytes(texturePath);
+
+                        //poka-yoke
+                        if (imageByteArray.Length < 67 ||  !ImageConversion.LoadImage(newTexture, imageByteArray))
+                        {
+                            MelonLogger.LogError("Option \"pet\" | Image loading error");
+                            continue;
+                        }
+
+                        petSprite = Sprite.CreateSprite(newTexture, new Rect(.0f, .0f, newTexture.width, newTexture.height), new Vector2(.5f, .5f), 100f, 0, 0, new Vector4(), false);
+                        petSprite.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+                    }
+
+                    if (arg.Contains(".phs"))
+                    {
+                        MelonLogger.Log("Found \"phs\" | Pet phrases will be replaced");
+
+                        SetupConfigFiles("normalPhrases.txt", ref petNormalPhrases);
+                        SetupConfigFiles("pokePhrases.txt", ref petPokePhrases);
+                    }
+
+                    if (arg.Contains(".aud"))
+                    {
+                        MelonLogger.Log("Found \"aud\" | Pet sounds will be replaced");
+                        MelonCoroutines.Start(SetupAudioFiles());
+                    }
+
+                    break;
                 }
             }
+
+            if (!optionFound)
+                MelonLogger.Log("No options found (example: -mp.ads.pet.phs)");
 
             MelonLogger.Log(spaces);
 
@@ -160,49 +161,67 @@ namespace VRC_Minus_Pet
                 Patch(typeof(ShortcutMenu).GetMethod("Method_Private_Void_0"), GetLocalPatch("ShortcutMenuPatch"), null);
 
             Patch(typeof(VRCPlusThankYou).GetMethod("OnEnable"), GetLocalPatch("SetupMenuPetPatch"), null);
+        }
 
-            if (useCustomPet)
-                MelonCoroutines.Start(PostInitUI());
+        static System.Collections.IEnumerator SetupAudioFiles()
+        {
+            foreach (string fileName in Directory.GetFiles(SetupConfigFiles("audio", ref emptyList, true)))
+            {
+                if (fileName.Contains(".ogg") || fileName.Contains(".wav"))
+                {
+                    WWW www = new WWW(Path.Combine("file://", fileName));
+                    yield return www;
+
+                    AudioClip audioClip = www.GetAudioClip();
+                    audioClip.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+
+                    audioClips.Add(audioClip);
+                }
+                else
+                    MelonLogger.LogWarning("Option \"aud\" | File has wrong audio format (Only .ogg/.wav are supported), will be ignored");
+            }
+
+            if (audioClips.Count == 0)
+                MelonLogger.LogWarning(string.Format("Option \"aud\" | Audio files not found ({0}/audio/)", configPath));
         }
 
         public override void VRChat_OnUiManagerInit()
         {
-            if (useCustomPhrages)
-                SetupMenuPetPhrases();
-
             if (removeAdverts)
                 InitUI();
         }
 
-        //VRC-Minus
-        private static void SetupMenuPetPhrases()
+        static string SetupConfigFiles(string fileName, ref Il2CppSystem.Collections.Generic.List<string> phrasesArray, bool isDirectory = false)
         {
-            string petpath = Path.Combine(MelonLoaderBase.UserDataPath, "Custom_Menu_Pet");
+            if (!Directory.Exists(configPath))
+                Directory.CreateDirectory(configPath);
 
-            if (!Directory.Exists(petpath))
-                Directory.CreateDirectory(petpath);
+            string filePath = Path.Combine(configPath, fileName);
 
-            string normal_phrases_path = Path.Combine(petpath, "normal_phrases.txt");
-
-            if (File.Exists(normal_phrases_path))
+            if (isDirectory)
             {
-                foreach (string line in File.ReadAllLines(normal_phrases_path))
-                    if (!string.IsNullOrEmpty(line))
-                        petNormalPhrases.Add(line);
+                if (!Directory.Exists(filePath))
+                    Directory.CreateDirectory(filePath);
+
+                return filePath;
+            }
+
+            if (File.Exists(filePath))
+            {
+                if (phrasesArray != null)
+                    foreach (string line in File.ReadAllLines(filePath))
+                        if (!string.IsNullOrEmpty(line))
+                            phrasesArray.Add(line);
+
+                return filePath;
             }
             else
-                File.Create(normal_phrases_path);
-
-            string poke_phrases_path = Path.Combine(petpath, "poke_phrases.txt");
-
-            if (File.Exists(poke_phrases_path))
             {
-                foreach (string line in File.ReadAllLines(poke_phrases_path))
-                    if (!string.IsNullOrEmpty(line))
-                        petPokePhrases.Add(line);
+                if (phrasesArray != null)
+                    File.Create(filePath);
+
+                return null;
             }
-            else
-                File.Create(poke_phrases_path);
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using System.Reflection;
 using MelonLoader;
 
-[assembly: AssemblyTitle(VRC_Minus_Pet.BuildInfo.Description)]
-[assembly: AssemblyDescription(VRC_Minus_Pet.BuildInfo.Description)]
-[assembly: AssemblyCompany(VRC_Minus_Pet.BuildInfo.Company)]
-[assembly: AssemblyProduct(VRC_Minus_Pet.BuildInfo.Name)]
-[assembly: AssemblyCopyright("Created by " + VRC_Minus_Pet.BuildInfo.Author)]
-[assembly: AssemblyTrademark(VRC_Minus_Pet.BuildInfo.Company)]
-[assembly: AssemblyVersion(VRC_Minus_Pet.BuildInfo.Version)]
-[assembly: AssemblyFileVersion(VRC_Minus_Pet.BuildInfo.Version)]
-[assembly: MelonInfo(typeof(VRC_Minus_Pet.VRC_Minus_Pet), VRC_Minus_Pet.BuildInfo.Name, VRC_Minus_Pet.BuildInfo.Version, VRC_Minus_Pet.BuildInfo.Author, VRC_Minus_Pet.BuildInfo.DownloadLink)]
+[assembly: AssemblyTitle(VRCPlusPet.BuildInfo.Description)]
+[assembly: AssemblyDescription(VRCPlusPet.BuildInfo.Description)]
+[assembly: AssemblyCompany(VRCPlusPet.BuildInfo.Company)]
+[assembly: AssemblyProduct(VRCPlusPet.BuildInfo.Name)]
+[assembly: AssemblyCopyright("Created by " + VRCPlusPet.BuildInfo.Author)]
+[assembly: AssemblyTrademark(VRCPlusPet.BuildInfo.Company)]
+[assembly: AssemblyVersion(VRCPlusPet.BuildInfo.Version)]
+[assembly: AssemblyFileVersion(VRCPlusPet.BuildInfo.Version)]
+[assembly: MelonInfo(typeof(VRCPlusPet.VRCPlusPet), VRCPlusPet.BuildInfo.Name, VRCPlusPet.BuildInfo.Version, VRCPlusPet.BuildInfo.Author, VRCPlusPet.BuildInfo.DownloadLink)]
 
 [assembly: MelonGame("VRChat", "VRChat")]
