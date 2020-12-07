@@ -24,7 +24,7 @@ namespace VRCPlusPet
 
     public class VRCPlusPet : MelonMod
     {
-        static string configPath = Path.Combine(MelonLoaderBase.UserDataPath, "_Pet_Config");
+        static string configPath = Path.Combine(MelonLoaderBase.UserDataPath, "VRCPlusPet_Config");
         static bool removeAdverts = true;
         static Il2CppSystem.Collections.Generic.List<string> petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>();
