@@ -4,11 +4,11 @@ Hiding VRC+ advertising, can replace default pet, his phrases and poke sounds. <
 
 <h3>Main Features:<h3>
  
- * All features can be disabled;
- * VRC+ advertising hiding (w/o hiding "Early Supporter Badge" and "Supporter Badge");
- * Custom pet image;
- * Custom pet phrases;
- * Custom pet poke sounds. <br>
+ + All features can be disabled;
+ + VRC+ advertising hiding (w/o hiding "Early Supporter Badge" and "Supporter Badge");
+ + Custom pet image;
+ + Custom pet phrases;
+ + Custom pet poke sounds. <br>
 
 ![Natsuki](https://i.ibb.co/sbDK5kG/image.png)
 
