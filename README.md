@@ -1,6 +1,13 @@
 # VRCPlusPet
 VRChat Mod that uses [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader). <br>
-Removes VRC+ advertising (w/o removing "Early Supporter Badge" and "Supporter Badge"), can replace default pet, his phrases and poke sounds (if needed).
+Hiding VRC+ advertising, can replace default pet, his phrases and poke sounds. <br>
+
+<h3>Main Features:<h3>
+ * All features can be disabled;
+ * VRC+ advertising hiding (w/o hiding "Early Supporter Badge" and "Supporter Badge");
+ * Custom pet image;
+ * Custom pet phrases;
+ * Custom pet poke sounds. <br>
 
 ![Natsuki](https://i.ibb.co/sbDK5kG/image.png)
 
@@ -25,16 +32,14 @@ If you want to remove some options - then just do it: "-pp.pet.phs". <br>
 | .phs | Pet phrases will be replaced |
 | .aud | Pet poke sounds will be replaced |
 
-
 <h3>How to replace Phrases for Pet?</h3>
 
-  1. Use "-mp.phs" option, run VRChat once;
+  1. Use ".phs" option, run VRChat once;
   2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Change files in "UserData/VRCPlusPet_Config/" folder.
 
   > "normalPhrases.txt" - Random phrases. <br>
   > "pokePhrases.txt" - Random Phrases when poking.
-
 
 <h3>How to replace Pet?</h3>
 
@@ -48,11 +53,11 @@ If you want to remove some options - then just do it: "-pp.pet.phs". <br>
 <h3>How to replace Poke Sounds?</h3>
 
   > Mod currently supports only ".ogg/.wav" sound files. <br>
-  > You can use any names of sound files. <br>
+  > Sound files can have any names. <br>
   
   1. Use ".aud" option, run VRChat once;
   2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Drop audio files to "UserData/VRCPlusPet_Config/audio/" folder.
 
 <h3>TODO</h3>
-Nothing
+ Nothing
