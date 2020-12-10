@@ -6,6 +6,7 @@ Hides VRC+ advertising, can replace default pet, his phrases and poke sounds. <b
  
  * All features can be enabled/disabled;
  * VRC+ advertising hiding (w/o hiding "Early Supporter Badge" and "Supporter Badge");
+ * Changing main menu tab buttons to normal size;
  * Custom pet image;
  * Custom pet phrases;
  * Custom pet poke sounds. <br>
