@@ -69,7 +69,8 @@ namespace VRCPlusPet
                 }
             }
         }
-
+    
+        //from VRC-Minus
         static bool ShortcutMenuPatch(ShortcutMenu __instance)
         {
             __instance.vrcplusThankYou?.SetActive(true);
