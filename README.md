@@ -62,4 +62,6 @@ If you want to remove some options - then just do it: "-pp.pet.phs". <br>
   3. Drop audio files to "UserData/VRCPlusPet_Config/audio/" folder.
 
 <h3>TODO</h3>
- Nothing
+  Nothing <br><br>
+ 
+ This mod based on ["VRC-Minus"](https://github.com/HerpDerpinstine/VRC-Minus).
