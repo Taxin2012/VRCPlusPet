@@ -50,10 +50,24 @@ namespace VRCPlusPet
 
         static void InitUI()
         {
-            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content/UserIconTab"));
-            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content/VRC+PageTab"));
             GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter"));
             GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites"));
+
+            Transform tabTransform = GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content").transform;
+
+            for(int i = 0; i < tabTransform.childCount; i++)
+            {
+                Transform childTransform = tabTransform.GetChild(i);
+                string childName = childTransform.name;
+
+                if (childName != "Search")
+                {
+                    if (childName == "UserIconTab" || childName == "VRC+PageTab")
+                        GameObject.DestroyImmediate(childTransform.gameObject);
+                    else
+                        childTransform.GetComponent<LayoutElement>().preferredWidth = 250f;
+                }
+            }
         }
 
         static bool ShortcutMenuPatch(ShortcutMenu __instance)
@@ -152,7 +166,7 @@ namespace VRCPlusPet
         {
             string spaces = new string('-', 40);
             MelonLogger.Log(spaces);
-            MelonLogger.Log(string.Format("Initializing {0}...", BuildInfo.Name));
+            MelonLogger.Log("Initializing...");
 
             bool optionFound = false;
 
