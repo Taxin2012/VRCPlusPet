@@ -33,7 +33,7 @@ namespace VRCPlusPet
         static bool removeAdverts = true;
         static Il2CppSystem.Collections.Generic.List<string> petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>();
-        static Il2CppSystem.Collections.Generic.List<string> emptyList = null;
+        static Il2CppSystem.Collections.Generic.List<string> nulledList = null;
         static Il2CppSystem.Collections.Generic.List<AudioClip> audioClips = new Il2CppSystem.Collections.Generic.List<AudioClip>();
         static HarmonyInstance modHarmonyInstance = HarmonyInstance.Create(BuildInfo.Name);
         static Sprite petSprite;
@@ -110,7 +110,7 @@ namespace VRCPlusPet
         
         static IEnumerator SetupAudioFiles()
         {
-            foreach (string fileName in Directory.GetFiles(SetupConfigFiles("audio", ref emptyList, true), "*.*", SearchOption.TopDirectoryOnly))
+            foreach (string fileName in Directory.GetFiles(SetupConfigFiles("audio", ref nulledList, true), "*.*", SearchOption.TopDirectoryOnly))
             {
                 if (fileName.Contains(".ogg") || fileName.Contains(".wav"))
                 {
@@ -201,7 +201,7 @@ namespace VRCPlusPet
                     {
                         MelonLogger.Log("Found \"pet\" | Pet will be replaced");
 
-                        string texturePath = SetupConfigFiles("pet.png", ref emptyList);
+                        string texturePath = SetupConfigFiles("pet.png", ref nulledList);
 
                         if (texturePath == null)
                         {
