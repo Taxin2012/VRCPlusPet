@@ -1,8 +1,6 @@
 # VRCPlusPet
 VRChat Mod that uses [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader). <br>
-Hides VRC+ advertising, can replace default pet, his phrases and poke sounds. <br><br>
-
- > Warning: I'm not responsible if you get banned or anything like that! Use this mod at your own risk.
+Hides VRC+ advertising, can replace default pet, his phrases and poke sounds.
 
 <h3>Main Features:</h3>
  
@@ -55,10 +53,10 @@ All configs is placed in bottom of "UI Elements" menu in Quick Menu.
   1. Enable "Replace pet poke sounds?" in mod config;
   2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Drop audio files to "UserData/VRCPlusPet_Config/audio/" folder.
+ 
+<h3>Warning</h3>
 
-<h3>TODO</h3>
-
-  Nothing <br><br>
+ > I'm not responsible if you get banned or anything like that! Use this mod at your own risk.
  
 <h3>Credits</h3>
  
