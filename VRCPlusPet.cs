@@ -1,6 +1,7 @@
 
 using System;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Collections;
 
@@ -10,6 +11,8 @@ using MethodBase = System.Reflection.MethodBase;
 
 using UnityEngine;
 using UnityEngine.UI;
+
+using UIExpansionKit.API;
 
 namespace VRCPlusPet
 {
@@ -25,15 +28,21 @@ namespace VRCPlusPet
 
     public class VRCPlusPet : MelonMod
     {
-
         static string
             configPath = "VRCPlusPet_Config",
-            fullconfigPath = Path.Combine(MelonLoaderBase.UserDataPath, configPath);
+            fullconfigPath = Path.Combine(MelonLoaderBase.UserDataPath, configPath),
+            uixURL = "https://raw.githubusercontent.com/Taxin2012/VRCPlusPet/master/uix_link.txt",
+            uixPath = Path.Combine(Environment.CurrentDirectory, "Mods/UIExpansionKit.dll"),
+            uixVersionPath = Path.Combine(fullconfigPath, "uixVersion"),
+
+            mlCfgNameHideAds = "Hide Ads",
+            mlCfgNameReplacePet = "Replace Pet",
+            mlCfgNameReplacePhrases = "Replace Phrases",
+            mlCfgNameReplaceSounds = "Replace Sounds";
             
-        static bool removeAdverts = true;
         static Il2CppSystem.Collections.Generic.List<string> petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>();
-        static Il2CppSystem.Collections.Generic.List<string> nulledList = null;
+        static Il2CppSystem.Collections.Generic.List<string> emptyList = null;
         static Il2CppSystem.Collections.Generic.List<AudioClip> audioClips = new Il2CppSystem.Collections.Generic.List<AudioClip>();
         static HarmonyInstance modHarmonyInstance = HarmonyInstance.Create(BuildInfo.Name);
         static Sprite petSprite;
@@ -69,7 +78,7 @@ namespace VRCPlusPet
                 }
             }
         }
-    
+
         //from VRC-Minus
         static bool ShortcutMenuPatch(ShortcutMenu __instance)
         {
@@ -110,7 +119,7 @@ namespace VRCPlusPet
         
         static IEnumerator SetupAudioFiles()
         {
-            foreach (string fileName in Directory.GetFiles(SetupConfigFiles("audio", ref nulledList, true), "*.*", SearchOption.TopDirectoryOnly))
+            foreach (string fileName in Directory.GetFiles(SetupConfigFiles("audio", ref emptyList, true), "*.*", SearchOption.TopDirectoryOnly))
             {
                 if (fileName.Contains(".ogg") || fileName.Contains(".wav"))
                 {
@@ -163,76 +172,106 @@ namespace VRCPlusPet
             }
         }
 
+        static void SetupToggleButton(string displayText, string configName)
+        {
+            ExpansionKitApi.GetExpandedMenu(ExpandedMenu.UiElementsQuickMenu).AddToggleButton(displayText,
+            (bool boolVar) => MelonPrefs.SetBool(BuildInfo.Name, configName, boolVar),
+            () => MelonPrefs.GetBool(BuildInfo.Name, configName));
+        }
+
         public override void OnApplicationStart()
         {
             string spaces = new string('-', 40);
             MelonLogger.Log(spaces);
             MelonLogger.Log("Initializing...");
 
-            bool optionFound = false;
+            MelonPrefs.RegisterCategory(BuildInfo.Name, BuildInfo.Name);
+            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameHideAds, true);
+            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplacePet, false);
+            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplacePhrases, false);
+            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplaceSounds, false);
 
-            foreach (string arg in Environment.GetCommandLineArgs())
+            MelonLogger.Log("Checking UIExpansionKit version... ");
+            MelonLogger.Log(string.Format("Fetching UIX URL: [{0}]", uixURL));
+
+            HttpWebResponse response = (HttpWebResponse)WebRequest.Create(uixURL).GetResponse();
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                if (arg.StartsWith("-pp."))
+                string versionAndUIXUrl = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                string[] versionAndUIX = versionAndUIXUrl.Split('|');
+
+                if (!File.Exists(uixPath) || !File.Exists(uixVersionPath) || File.ReadAllText(uixVersionPath) != versionAndUIX[0])
                 {
-                    optionFound = true;
+                    MelonLogger.Log("Downloading UIExpansionKit...");
 
-                    if (arg.Contains(".ads"))
+                    new WebClient().DownloadFile(versionAndUIX[1], uixPath);
+                    File.WriteAllText(uixVersionPath, versionAndUIX[0]);
+
+                    MelonLogger.Log("UIExpansionKit successfuly downloaded! Restart needed!");
+
+                    //UIX working strange :(
+                    /*Assembly uiExpansionKitAssembly = Assembly.LoadFile(uixPath);
+                    var uixMainClass = uiExpansionKitAssembly.GetType("UIExpansionKit.UiExpansionKitMod");
+
+                    var method = uixMainClass.GetMethod("OnApplicationStart");
+                    method.Invoke(Activator.CreateInstance(uixMainClass), new object[0]);*/
+                }
+                else
+                {
+                    MelonLogger.Log("UIExpansionKit is up to date!");
+
+                    SetupToggleButton("Hide VRC+ adverts?", mlCfgNameHideAds);
+                    SetupToggleButton("Replace pet image?", mlCfgNameReplacePet);
+                    SetupToggleButton("Replace pet phrases?", mlCfgNameReplacePhrases);
+                    SetupToggleButton("Replace pet poke sounds?", mlCfgNameReplaceSounds);
+                }
+            }
+            else
+                MelonLogger.LogError("Got error in HTTP request");
+
+            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplacePet))
+            {
+                MelonLogger.Log(string.Format("Option \"{0}\" | Pet will be replaced", mlCfgNameReplacePet));
+
+                string texturePath = SetupConfigFiles("pet.png", ref emptyList);
+
+                if (texturePath != null)
+                {
+                    Texture2D newTexture = new Texture2D(2, 2);
+                    byte[] imageByteArray = File.ReadAllBytes(texturePath);
+
+                    //poka-yoke
+                    if (imageByteArray.Length < 67 || !ImageConversion.LoadImage(newTexture, imageByteArray))
                     {
-                        MelonLogger.Log("Found \"ads\" | Advertising will stay");
-                        removeAdverts = false;
+                        MelonLogger.LogError(string.Format("Option \"{0}\" | Image loading error", mlCfgNameReplacePet));
                     }
-
-                    if (arg.Contains(".phs"))
+                    else
                     {
-                        MelonLogger.Log("Found \"phs\" | Pet phrases will be replaced");
-
-                        SetupConfigFiles("normalPhrases.txt", ref petNormalPhrases);
-                        SetupConfigFiles("pokePhrases.txt", ref petPokePhrases);
-                    }
-
-                    if (arg.Contains(".aud"))
-                    {
-                        MelonLogger.Log("Found \"aud\" | Pet sounds will be replaced");
-                        MelonCoroutines.Start(SetupAudioFiles());
-                    }
-
-                    if (arg.Contains(".pet"))
-                    {
-                        MelonLogger.Log("Found \"pet\" | Pet will be replaced");
-
-                        string texturePath = SetupConfigFiles("pet.png", ref nulledList);
-
-                        if (texturePath == null)
-                        {
-                            MelonLogger.LogWarning(string.Format("Option \"pet\" | Image not found (UserData/{0}/pet.png)", configPath));
-                            continue;
-                        }
-
-                        Texture2D newTexture = new Texture2D(2, 2);
-                        byte[] imageByteArray = File.ReadAllBytes(texturePath);
-
-                        //poka-yoke
-                        if (imageByteArray.Length < 67 || !ImageConversion.LoadImage(newTexture, imageByteArray))
-                        {
-                            MelonLogger.LogError("Option \"pet\" | Image loading error");
-                            continue;
-                        }
-
                         petSprite = Sprite.CreateSprite(newTexture, new Rect(.0f, .0f, newTexture.width, newTexture.height), new Vector2(.5f, .5f), 100f, 0, 0, new Vector4(), false);
                         petSprite.hideFlags |= HideFlags.DontUnloadUnusedAsset;
                     }
-
-                    break;
                 }
+                else
+                    MelonLogger.LogWarning(string.Format("Option \"{0}\" | Image not found (UserData/{1}/pet.png)", mlCfgNameReplacePet, configPath));
             }
 
-            if (!optionFound)
-                MelonLogger.Log("No options found (example: -mp.ads.pet.phs.aud)");
+            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplacePhrases))
+            {
+                MelonLogger.Log(string.Format("Option \"{0}\" | Pet phrases will be replaced", mlCfgNameReplacePhrases));
+                SetupConfigFiles("normalPhrases.txt", ref petNormalPhrases);
+                SetupConfigFiles("pokePhrases.txt", ref petPokePhrases);
+            }
+
+            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplaceSounds))
+            {
+                MelonLogger.Log(string.Format("Option \"{0}\" | Pet sounds will be replaced", mlCfgNameReplaceSounds));
+                MelonCoroutines.Start(SetupAudioFiles());
+            }
 
             MelonLogger.Log(spaces);
 
-            if (removeAdverts)
+            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameHideAds))
                 Patch(typeof(ShortcutMenu).GetMethod("Method_Private_Void_0"), GetLocalPatch("ShortcutMenuPatch"), null);
 
             Patch(typeof(VRCPlusThankYou).GetMethod("OnEnable"), GetLocalPatch("SetupMenuPetPatch"), null);
@@ -240,7 +279,7 @@ namespace VRCPlusPet
 
         public override void VRChat_OnUiManagerInit()
         {
-            if (removeAdverts)
+            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameHideAds))
                 InitUI();
         }
     }
