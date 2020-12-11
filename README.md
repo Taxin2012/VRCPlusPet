@@ -45,7 +45,7 @@ All configs is placed in bottom of "UI Elements" menu in Quick Menu.
   > Mod currently supports only ".png" image files. <br>
   > Image file name must be "pet.png". <br>
   
-  1. Enable "Replace pet phrases?" in mod config;
+  1. Enable "Replace pet phrases?" in mod config (for auto-creating files - game restart needed);
   2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Drop image file to "UserData/VRCPlusPet_Config/" folder (make sure that file has name "pet.png").
   
@@ -54,7 +54,7 @@ All configs is placed in bottom of "UI Elements" menu in Quick Menu.
   > Mod currently supports only ".ogg/.wav" sound files. <br>
   > Sound files can have any names. <br>
   
-  1. Enable "Replace pet poke sounds?" in mod config;
+  1. Enable "Replace pet poke sounds?" in mod config (for auto-creating folder - game restart needed);
   2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Drop audio files to "UserData/VRCPlusPet_Config/audio/" folder.
  
