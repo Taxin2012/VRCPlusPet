@@ -187,15 +187,14 @@ namespace VRCPlusPet
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                string versionAndUIXUrl = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                string[] versionAndUIX = versionAndUIXUrl.Split('|');
+                string[] versionAndUIXUrl = new StreamReader(response.GetResponseStream()).ReadToEnd().Split('|');
 
-                if (!File.Exists(uixPath) || !File.Exists(uixVersionPath) || File.ReadAllText(uixVersionPath) != versionAndUIX[0])
+                if (!File.Exists(uixPath) || !File.Exists(uixVersionPath) || File.ReadAllText(uixVersionPath) != versionAndUIXUrl[0])
                 {
                     MelonLogger.Log("Downloading UIExpansionKit...");
 
-                    new WebClient().DownloadFile(versionAndUIX[1], uixPath);
-                    File.WriteAllText(uixVersionPath, versionAndUIX[0]);
+                    new WebClient().DownloadFile(versionAndUIXUrl[1], uixPath);
+                    File.WriteAllText(uixVersionPath, versionAndUIXUrl[0]);
 
                     MelonLogger.LogWarning("UIExpansionKit successfuly downloaded! Restart needed!");
 
