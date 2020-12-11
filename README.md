@@ -57,4 +57,7 @@ All configs is placed in bottom of "UI Elements" menu in Quick Menu.
 <h3>TODO</h3>
   Nothing <br><br>
  
- This mod based on ["VRC-Minus"](https://github.com/HerpDerpinstine/VRC-Minus).
+ <h3>Credits</h3>
+  1. Original idea - ["VRC-Minus link"](https://github.com/HerpDerpinstine/VRC-Minus);
+  2. UIExpansionKit - ["UIExpansionKit link"](https://github.com/knah/VRCMods).
+  
