@@ -64,7 +64,7 @@ All configs is placed in bottom of "UI Elements" menu in Quick Menu.
  
 <h3>Credits</h3>
  
-  1. [Original idea](https://github.com/HerpDerpinstine/VRC-Minus);
-  2. [UIExpansionKit](https://github.com/knah/VRCMods);
-  3. [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader).
+  1. Original idea - [VRC-Minus](https://github.com/HerpDerpinstine/VRC-Minus) by HerpDerpinstine;
+  2. [UIExpansionKit](https://github.com/knah/VRCMods) by knah;
+  3. [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader) by HerpDerpinstine.
   
