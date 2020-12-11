@@ -10,5 +10,6 @@ using MelonLoader;
 [assembly: AssemblyVersion(VRCPlusPet.BuildInfo.Version)]
 [assembly: AssemblyFileVersion(VRCPlusPet.BuildInfo.Version)]
 [assembly: MelonInfo(typeof(VRCPlusPet.VRCPlusPet), VRCPlusPet.BuildInfo.Name, VRCPlusPet.BuildInfo.Version, VRCPlusPet.BuildInfo.Author, VRCPlusPet.BuildInfo.DownloadLink)]
+[assembly: MelonOptionalDependencies("UIExpansionKit")]
 
 [assembly: MelonGame("VRChat", "VRChat")]
