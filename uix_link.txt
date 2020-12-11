@@ -1,1 +1,1 @@
-https://github.com/knah/VRCMods/releases/download/updates-2020-11-22/UIExpansionKit.dll
+2020-11-22|https://github.com/knah/VRCMods/releases/download/updates-2020-11-22/UIExpansionKit.dll
