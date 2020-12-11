@@ -19,24 +19,17 @@ Hides VRC+ advertising, can replace default pet, his phrases and poke sounds. <b
 
 Just drop "VRCPlusPet.dll" to "VRChat/Mods" folder.
  
-<h3>Mod uses launch options:</h3>
+<h3>Mod configuration</h3>
 
-> Editing launch options: Steam Library -> RMB on VRChat -> Properties -> Set Launch Options
+All configs is placed in bottom of "UI Elements" menu in Quick Menu.
 
-Options must be added only after: "-pp". <br>
-So all options will looks like: "-pp.ads.pet.phs.aud". <br>
-If you want to remove some options - then just do it: "-pp.pet.phs". <br>
+<h3>How to enable VRC+ advertising?</h3>
 
-| Option | Description |
-| --- | --- |
-| .ads | The mod will not touch any VRC+ advertising |
-| .pet | Pet will be replaced |
-| .phs | Pet phrases will be replaced |
-| .aud | Pet poke sounds will be replaced |
+ 1. Disable "Hide VRC+ adverts?" in mod config;
 
 <h3>How to replace Phrases for Pet?</h3>
 
-  1. Use ".phs" option, run VRChat once;
+  1. Enable "Replace pet image?" in mod config;
   2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Change files in "UserData/VRCPlusPet_Config/" folder.
 
@@ -48,7 +41,7 @@ If you want to remove some options - then just do it: "-pp.pet.phs". <br>
   > Mod currently supports only ".png" image files. <br>
   > Image file name must be "pet.png". <br>
   
-  1. Use ".pet" option;
+  1. Enable "Replace pet phrases?" in mod config;
   2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Drop image file to "UserData/VRCPlusPet_Config/" folder (make sure that file has name "pet.png").
   
@@ -57,7 +50,7 @@ If you want to remove some options - then just do it: "-pp.pet.phs". <br>
   > Mod currently supports only ".ogg/.wav" sound files. <br>
   > Sound files can have any names. <br>
   
-  1. Use ".aud" option, run VRChat once;
+  1. Enable "Replace pet poke sounds?" in mod config;
   2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Drop audio files to "UserData/VRCPlusPet_Config/audio/" folder.
 
