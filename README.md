@@ -13,6 +13,10 @@ Hides VRC+ advertising, can replace default pet, his phrases and poke sounds.
 
 ![Natsuki preview](https://i.ibb.co/vQ3WrQw/image.png)
 
+<h3>Requirements:</h3>
+
+ 1. UIExpansionKit (will be downloaded automatically by this mod).
+
 <h3>How to install:</h3>
 
 > VRChat game folder: Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files.
