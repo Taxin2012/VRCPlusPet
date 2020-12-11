@@ -56,7 +56,7 @@ All configs is placed in bottom of "UI Elements" menu in Quick Menu.
  
 <h3>Warning</h3>
 
- > I'm not responsible if you get banned or anything like that! Use this mod at your own risk.
+  I'm not responsible if you get banned or anything like that! Use this mod at your own risk.
  
 <h3>Credits</h3>
  
