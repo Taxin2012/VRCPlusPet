@@ -15,7 +15,8 @@ Hides VRC+ advertising, can replace default pet, his phrases and poke sounds.
 
 <h3>Requirements:</h3>
 
- 1. UIExpansionKit (will be downloaded automatically by this mod, but game restart needed after that).
+ 1. [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader);
+ 2. [UIExpansionKit](https://github.com/knah/VRCMods) (will be downloaded automatically by this mod, but game restart needed after that).
 
 <h3>How to install:</h3>
 
