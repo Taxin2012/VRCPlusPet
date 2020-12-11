@@ -55,9 +55,11 @@ All configs is placed in bottom of "UI Elements" menu in Quick Menu.
   3. Drop audio files to "UserData/VRCPlusPet_Config/audio/" folder.
 
 <h3>TODO</h3>
+
   Nothing <br><br>
  
- <h3>Credits</h3>
+<h3>Credits</h3>
+ 
   1. Original idea - ["VRC-Minus link"](https://github.com/HerpDerpinstine/VRC-Minus);
   2. UIExpansionKit - ["UIExpansionKit link"](https://github.com/knah/VRCMods).
   
