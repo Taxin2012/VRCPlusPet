@@ -25,7 +25,7 @@ All configs is placed in bottom of "UI Elements" menu in Quick Menu.
 
 <h3>How to enable VRC+ advertising?</h3>
 
- 1. Disable "Hide VRC+ adverts?" in mod config;
+ 1. Disable "Hide VRC+ adverts?" in mod config.
 
 <h3>How to replace Phrases for Pet?</h3>
 
