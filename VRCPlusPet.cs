@@ -117,9 +117,9 @@ namespace VRCPlusPet
             }
         }
 
-        static IEnumerator SetupAudioFile(string fileName)
+        static IEnumerator SetupAudioFile(string filePath)
         {
-            WWW www = new WWW(fileName);
+            WWW www = new WWW(filePath);
             yield return www;
 
             AudioClip audioClip = www.GetAudioClip();
