@@ -196,7 +196,7 @@ namespace VRCPlusPet
                     new WebClient().DownloadFile(versionAndUIXUrl[1], uixPath);
                     File.WriteAllText(uixVersionPath, versionAndUIXUrl[0]);
 
-                    MelonLogger.LogWarning("UIExpansionKit successfuly downloaded! Restart needed!");
+                    MelonLogger.LogWarning("UIExpansionKit successfully downloaded! Restart needed!");
 
                     //UIX working strange :(
                     /*Assembly uiExpansionKitAssembly = Assembly.LoadFile(uixPath);
