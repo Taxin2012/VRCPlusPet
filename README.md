@@ -27,6 +27,7 @@ Just drop "VRCPlusPet.dll" to "VRChat/Mods" folder.
 <h3>Mod configuration</h3>
 
 All configs is placed in bottom of "UI Elements" menu in Quick Menu.
+Game restart needed after changing.
 
 <h3>How to enable VRC+ advertising?</h3>
 
