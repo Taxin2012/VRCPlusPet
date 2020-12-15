@@ -1,7 +1,6 @@
 
 using System;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Collections;
 
@@ -37,7 +36,7 @@ namespace VRCPlusPet
             mlCfgNameReplacePet = "Replace Pet",
             mlCfgNameReplacePhrases = "Replace Phrases",
             mlCfgNameReplaceSounds = "Replace Sounds";
-            
+
         static Il2CppSystem.Collections.Generic.List<string> petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> emptyList = null;
@@ -62,7 +61,7 @@ namespace VRCPlusPet
 
             Transform tabTransform = GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content").transform;
 
-            for(int i = 0; i < tabTransform.childCount; i++)
+            for (int i = 0; i < tabTransform.childCount; i++)
             {
                 Transform childTransform = tabTransform.GetChild(i);
                 string childName = childTransform.name;
