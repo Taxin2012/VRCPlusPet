@@ -31,9 +31,7 @@ namespace VRCPlusPet
         static string
             configPath = "VRCPlusPet_Config",
             fullconfigPath = Path.Combine(MelonLoaderBase.UserDataPath, configPath),
-            uixURL = "https://raw.githubusercontent.com/Taxin2012/VRCPlusPet/master/uix_link.txt",
             uixPath = Path.Combine(Environment.CurrentDirectory, "Mods/UIExpansionKit.dll"),
-            uixVersionPath = Path.Combine(fullconfigPath, "uixVersion"),
 
             mlCfgNameHideAds = "Hide Ads",
             mlCfgNameReplacePet = "Replace Pet",
@@ -180,43 +178,17 @@ namespace VRCPlusPet
             MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplacePhrases, false);
             MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplaceSounds, false);
 
-            MelonLogger.Log("Checking UIExpansionKit version... ");
-            MelonLogger.Log(string.Format("Fetching UIX URL: [{0}]", uixURL));
-
-            HttpWebResponse response = (HttpWebResponse)WebRequest.Create(uixURL).GetResponse();
-
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (File.Exists(uixPath))
             {
-                string[] versionAndUIXUrl = new StreamReader(response.GetResponseStream()).ReadToEnd().Split('|');
+                MelonLogger.Log("UIExpansionKit found, creating visual settings...");
 
-                if (!File.Exists(uixPath) || !File.Exists(uixVersionPath) || File.ReadAllText(uixVersionPath) != versionAndUIXUrl[0])
-                {
-                    MelonLogger.Log("Downloading UIExpansionKit...");
-
-                    new WebClient().DownloadFile(versionAndUIXUrl[1], uixPath);
-                    File.WriteAllText(uixVersionPath, versionAndUIXUrl[0]);
-
-                    MelonLogger.LogWarning("UIExpansionKit successfully downloaded! Restart needed!");
-
-                    //UIX working strange :(
-                    /*Assembly uiExpansionKitAssembly = Assembly.LoadFile(uixPath);
-                    var uixMainClass = uiExpansionKitAssembly.GetType("UIExpansionKit.UiExpansionKitMod");
-
-                    var method = uixMainClass.GetMethod("OnApplicationStart");
-                    method.Invoke(Activator.CreateInstance(uixMainClass), new object[0]);*/
-                }
-                else
-                {
-                    MelonLogger.Log("UIExpansionKit is up to date!");
-
-                    SetupToggleButton("Hide VRC+ adverts?", mlCfgNameHideAds);
-                    SetupToggleButton("Replace pet image?", mlCfgNameReplacePet);
-                    SetupToggleButton("Replace pet phrases?", mlCfgNameReplacePhrases);
-                    SetupToggleButton("Replace pet poke sounds?", mlCfgNameReplaceSounds);
-                }
+                SetupToggleButton("Hide VRC+ adverts?", mlCfgNameHideAds);
+                SetupToggleButton("Replace pet image?", mlCfgNameReplacePet);
+                SetupToggleButton("Replace pet phrases?", mlCfgNameReplacePhrases);
+                SetupToggleButton("Replace pet poke sounds?", mlCfgNameReplaceSounds);
             }
             else
-                MelonLogger.LogError("Got error in HTTP request");
+                MelonLogger.LogWarning("UIExpansionKit not found");
 
             if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplacePet))
             {
