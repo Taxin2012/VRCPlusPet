@@ -1,6 +1,6 @@
 # VRCPlusPet
 VRChat Mod that uses [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader). <br>
-Hides VRC+ advertising, can replace default pet, his phrases and poke sounds.
+Hides VRC+ advertising, can replace default pet, his phrases, poke sounds and chat bubble.
 
 <h3>Main Features:</h3>
  
@@ -9,7 +9,8 @@ Hides VRC+ advertising, can replace default pet, his phrases and poke sounds.
  * Changing main menu tab buttons to normal size;
  * Custom pet image;
  * Custom pet phrases;
- * Custom pet poke sounds. <br>
+ * Custom pet poke sounds;
+ * Custom chat bubble image. <br>
 
 ![Natsuki preview](https://i.ibb.co/vQ3WrQw/image.png)
 
@@ -33,23 +34,32 @@ Game restart needed after changing.
 
  1. Disable "Hide VRC+ adverts?" in mod config.
 
-<h3>How to replace Phrases for Pet?</h3>
+<h3>How to replace Pet image?</h3>
+
+  > Mod currently supports only ".png" image files. <br>
+  > Image file name must be "pet.png". <br>
 
   1. Enable "Replace pet image?" in mod config;
-  2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
+  2. Open VRChat game folder (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
+  3. Drop image file to "UserData/VRCPlusPet_Config/" folder (make sure that file has name "pet.png").
+
+<h3>How to replace Chat Bubble image?</h3>
+
+  > Mod currently supports only ".png" image files. <br>
+  > Image file name must be "bubble.png". <br>
+
+  1. Enable "Replace bubble image?" in mod config;
+  2. Open VRChat game folder (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
+  3. Drop image file to "UserData/VRCPlusPet_Config/" folder (make sure that file has name "bubble.png").
+
+<h3>How to replace Pet Phrases?</h3>
+  
+  1. Enable "Replace pet phrases?" in mod config (for auto-creating files - game restart needed);
+  2. Open VRChat game folder (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   3. Change files in "UserData/VRCPlusPet_Config/" folder.
 
   > "normalPhrases.txt" - Random phrases. <br>
   > "pokePhrases.txt" - Random Phrases when poking.
-
-<h3>How to replace Pet?</h3>
-
-  > Mod currently supports only ".png" image files. <br>
-  > Image file name must be "pet.png". <br>
-  
-  1. Enable "Replace pet phrases?" in mod config (for auto-creating files - game restart needed);
-  2. Open VRChat game folder  (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
-  3. Drop image file to "UserData/VRCPlusPet_Config/" folder (make sure that file has name "pet.png").
   
 <h3>How to replace Poke Sounds?</h3>
 
