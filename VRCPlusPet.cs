@@ -18,10 +18,10 @@ namespace VRCPlusPet
     public static class BuildInfo
     {
         public const string Name = "VRCPlusPet";
-        public const string Description = "Hides VRC+ advertising, can replace default pet, his phrases and poke sounds.";
+        public const string Description = "Hides VRC+ advertising, can replace default pet, his phrases, poke sounds and chat bubble.";
         public const string Author = "Taxin2012";
         public const string Company = null;
-        public const string Version = "1.0.4";
+        public const string Version = "1.0.5";
         public const string DownloadLink = "https://github.com/Taxin2012/VRCPlusPet";
     }
 
@@ -34,6 +34,7 @@ namespace VRCPlusPet
 
             mlCfgNameHideAds = "Hide Ads",
             mlCfgNameReplacePet = "Replace Pet",
+            mlCfgNameReplaceBubble = "Replace Bubble",
             mlCfgNameReplacePhrases = "Replace Phrases",
             mlCfgNameReplaceSounds = "Replace Sounds";
 
@@ -42,7 +43,13 @@ namespace VRCPlusPet
         static Il2CppSystem.Collections.Generic.List<string> emptyList = null;
         static Il2CppSystem.Collections.Generic.List<AudioClip> audioClips = new Il2CppSystem.Collections.Generic.List<AudioClip>();
         static HarmonyInstance modHarmonyInstance = HarmonyInstance.Create(BuildInfo.Name);
-        static Sprite petSprite;
+        static Sprite
+            petSprite,
+            bubbleSprite;
+        static Transform petTransform;
+        static Image
+            bubbleImageComponent,
+            petImageComponent;
 
         static void Patch(MethodBase TargetMethod, HarmonyMethod Prefix, HarmonyMethod Postfix)
         {
@@ -103,14 +110,26 @@ namespace VRCPlusPet
                 __instance.sounds = audioClips;
 
             __instance.gameObject.SetActive(true);
-            __instance.transform.parent.gameObject.SetActive(true);
 
+            if (petTransform == null)
+                petTransform = __instance.transform;
+
+            petTransform.parent.gameObject.SetActive(true);
+
+            if (bubbleSprite != null)
+            {
+                if (bubbleImageComponent == null)
+                    bubbleImageComponent = petTransform.Find("Dialog Bubble").Find("Bubble").GetComponent<Image>();
+
+                bubbleImageComponent.sprite = bubbleSprite;
+            }
+            
             if (petSprite != null)
             {
-                Image imageComponent = __instance.transform.FindChild("Character")?.GetComponent<Image>();
+                if (petImageComponent == null)
+                    petImageComponent = petTransform.FindChild("Character").GetComponent<Image>();
 
-                if (imageComponent != null)
-                    imageComponent.sprite = petSprite;
+                petImageComponent.sprite = petSprite;
             }
         }
 
@@ -165,6 +184,30 @@ namespace VRCPlusPet
             () => MelonPrefs.GetBool(BuildInfo.Name, configName));
         }
 
+        static void SetupSprite(string fileName, string configName, ref Sprite sprite, bool specialBorder = false)
+        {
+            string texturePath = SetupConfigFiles(fileName, ref emptyList);
+
+            if (texturePath != null)
+            {
+                Texture2D newTexture = new Texture2D(2, 2);
+                byte[] imageByteArray = File.ReadAllBytes(texturePath);
+
+                //poka-yoke
+                if (imageByteArray.Length < 67 || !ImageConversion.LoadImage(newTexture, imageByteArray))
+                {
+                    MelonLogger.LogError(string.Format("Option \"{0}\" | Image loading error", configName));
+                }
+                else
+                {
+                    sprite = Sprite.CreateSprite(newTexture, new Rect(.0f, .0f, newTexture.width, newTexture.height), new Vector2(.5f, .5f), 100f, 0, 0, specialBorder ? new Vector4(35f, 55f, 62f, 41f) : new Vector4(), false);
+                    sprite.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+                }
+            }
+            else
+                MelonLogger.LogWarning(string.Format("Option \"{0}\" | Image not found (UserData/{1}/{2})", configName, configPath, fileName));
+        }
+
         public override void OnApplicationStart()
         {
             string spaces = new string('-', 40);
@@ -174,6 +217,7 @@ namespace VRCPlusPet
             MelonPrefs.RegisterCategory(BuildInfo.Name, BuildInfo.Name);
             MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameHideAds, true);
             MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplacePet, false);
+            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplaceBubble, false);
             MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplacePhrases, false);
             MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplaceSounds, false);
 
@@ -183,6 +227,7 @@ namespace VRCPlusPet
 
                 SetupToggleButton("Hide VRC+ adverts?", mlCfgNameHideAds);
                 SetupToggleButton("Replace pet image?", mlCfgNameReplacePet);
+                SetupToggleButton("Replace pet image?", mlCfgNameReplaceBubble);
                 SetupToggleButton("Replace pet phrases?", mlCfgNameReplacePhrases);
                 SetupToggleButton("Replace pet poke sounds?", mlCfgNameReplaceSounds);
             }
@@ -193,26 +238,14 @@ namespace VRCPlusPet
             {
                 MelonLogger.Log(string.Format("Option \"{0}\" | Pet image will be replaced", mlCfgNameReplacePet));
 
-                string texturePath = SetupConfigFiles("pet.png", ref emptyList);
+                SetupSprite("pet.png", mlCfgNameReplacePet, ref petSprite);
+            }
 
-                if (texturePath != null)
-                {
-                    Texture2D newTexture = new Texture2D(2, 2);
-                    byte[] imageByteArray = File.ReadAllBytes(texturePath);
+            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplaceBubble))
+            {
+                MelonLogger.Log(string.Format("Option \"{0}\" | Bubble image will be replaced", mlCfgNameReplaceBubble));
 
-                    //poka-yoke
-                    if (imageByteArray.Length < 67 || !ImageConversion.LoadImage(newTexture, imageByteArray))
-                    {
-                        MelonLogger.LogError(string.Format("Option \"{0}\" | Image loading error", mlCfgNameReplacePet));
-                    }
-                    else
-                    {
-                        petSprite = Sprite.CreateSprite(newTexture, new Rect(.0f, .0f, newTexture.width, newTexture.height), new Vector2(.5f, .5f), 100f, 0, 0, new Vector4(), false);
-                        petSprite.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-                    }
-                }
-                else
-                    MelonLogger.LogWarning(string.Format("Option \"{0}\" | Image not found (UserData/{1}/pet.png)", mlCfgNameReplacePet, configPath));
+                SetupSprite("bubble.png", mlCfgNameReplaceBubble, ref bubbleSprite, true);
             }
 
             if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplacePhrases))
