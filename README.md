@@ -47,10 +47,13 @@ Game restart needed after changing.
 
   > Mod currently supports only ".png" image files. <br>
   > Image file name must be "bubble.png". <br>
-
-  1. Enable "Replace bubble image?" in mod config;
-  2. Open VRChat game folder (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
-  3. Drop image file to "UserData/VRCPlusPet_Config/" folder (make sure that file has name "bubble.png").
+  > Image editing required. <br>
+ 
+  1. Download original image: [Click me >_<](https://cdn.discordapp.com/attachments/548545237123989505/793646716779364362/ChatBubble_IMG_UI.png);
+  2. Edit the image as you want;
+  3. Enable "Replace bubble image?" in mod config;
+  4. Open VRChat game folder (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
+  5. Drop image file to "UserData/VRCPlusPet_Config/" folder (make sure that file has name "bubble.png").
 
 <h3>How to replace Pet Phrases?</h3>
   
