@@ -227,7 +227,7 @@ namespace VRCPlusPet
 
                 SetupToggleButton("Hide VRC+ adverts?", mlCfgNameHideAds);
                 SetupToggleButton("Replace pet image?", mlCfgNameReplacePet);
-                SetupToggleButton("Replace pet image?", mlCfgNameReplaceBubble);
+                SetupToggleButton("Replace bubble image?", mlCfgNameReplaceBubble);
                 SetupToggleButton("Replace pet phrases?", mlCfgNameReplacePhrases);
                 SetupToggleButton("Replace pet poke sounds?", mlCfgNameReplaceSounds);
             }
