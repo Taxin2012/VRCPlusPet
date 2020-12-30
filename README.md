@@ -12,7 +12,7 @@ Hides VRC+ advertising, can replace default pet, his phrases, poke sounds and ch
  * Custom pet poke sounds;
  * Custom chat bubble image. <br>
 
-![Natsuki preview](https://i.ibb.co/vQ3WrQw/image.png)
+![Natsuki preview](https://i.ibb.co/txdSMpn/2020-12-30-054613.png)
 
 <h3>Requirements:</h3>
 
