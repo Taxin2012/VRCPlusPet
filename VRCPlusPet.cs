@@ -63,8 +63,8 @@ namespace VRCPlusPet
 
         static void InitUI()
         {
-            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter"));
-            GameObject.DestroyImmediate(GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites"));
+            GameObject.Destroy(GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter"));
+            GameObject.Destroy(GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites"));
 
             Transform tabTransform = GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content").transform;
 
@@ -75,8 +75,8 @@ namespace VRCPlusPet
 
                 if (childName != "Search")
                 {
-                    if (childName == "UserIconTab" || childName == "VRC+PageTab")
-                        GameObject.DestroyImmediate(childTransform.gameObject);
+                    if (childName == "VRC+PageTab") //childName == "UserIconTab" ||
+                        GameObject.Destroy(childTransform.gameObject);
                     else
                         childTransform.GetComponent<LayoutElement>().preferredWidth = 250f;
                 }
