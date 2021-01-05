@@ -89,6 +89,7 @@ namespace VRCPlusPet
             __instance.vrcplusThankYou?.SetActive(true);
             __instance.userIconButton?.SetActive(false);
             __instance.userIconLearnMoreButton?.SetActive(false);
+            //__instance.userIconCameraButton?.SetActive(false);
             __instance.vrcplusBanner?.SetActive(false);
             __instance.vrcplusMiniBanner?.SetActive(false);
 
