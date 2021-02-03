@@ -91,6 +91,7 @@ namespace VRCPlusPet
             __instance.field_Public_GameObject_2?.SetActive(false); //Learn More
             __instance.field_Public_GameObject_3?.SetActive(false); //VRCPlusBanner
             __instance.field_Public_GameObject_4?.SetActive(false); //VRCPlusMiniBanner
+            //__instance.field_Public_GameObject_1?.SetActive(false); //userIconCameraButton
 
             return false;
         }
