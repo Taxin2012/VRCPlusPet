@@ -21,7 +21,7 @@ namespace VRCPlusPet
         public const string Description = "Hides VRC+ advertising, can replace default pet, his phrases, poke sounds and chat bubble.";
         public const string Author = "Taxin2012";
         public const string Company = null;
-        public const string Version = "1.0.5";
+        public const string Version = "1.0.6";
         public const string DownloadLink = "https://github.com/Taxin2012/VRCPlusPet";
     }
 
@@ -29,7 +29,7 @@ namespace VRCPlusPet
     {
         static string
             configPath = "VRCPlusPet_Config",
-            fullconfigPath = Path.Combine(MelonLoaderBase.UserDataPath, configPath),
+            fullconfigPath = Path.Combine(MelonUtils.UserDataDirectory, configPath),
             uixPath = Path.Combine(Environment.CurrentDirectory, "Mods/UIExpansionKit.dll"),
 
             mlCfgNameHideAds = "Hide Ads",
@@ -86,28 +86,27 @@ namespace VRCPlusPet
         //from VRC-Minus (bottom of the README file)
         static bool ShortcutMenuPatch(ShortcutMenu __instance)
         {
-            __instance.vrcplusThankYou?.SetActive(true);
-            __instance.userIconButton?.SetActive(false);
-            __instance.userIconLearnMoreButton?.SetActive(false);
-            //__instance.userIconCameraButton?.SetActive(false);
-            __instance.vrcplusBanner?.SetActive(false);
-            __instance.vrcplusMiniBanner?.SetActive(false);
+            __instance.field_Public_GameObject_5?.SetActive(true); //VRCPlusThankYou
+            __instance.field_Public_GameObject_0?.SetActive(false); //UserIconButton
+            __instance.field_Public_GameObject_2?.SetActive(false); //Learn More
+            __instance.field_Public_GameObject_3?.SetActive(false); //VRCPlusBanner
+            __instance.field_Public_GameObject_4?.SetActive(false); //VRCPlusMiniBanner
 
             return false;
         }
 
         static void SetupMenuPetPatch(VRCPlusThankYou __instance)
         {
-            __instance.oncePerWorld = false;
+            __instance.field_Public_Boolean_0 = false; //oncePerWorld
 
             if (petNormalPhrases.Count > 0)
-                __instance.normalPhrases = petNormalPhrases;
+                __instance.field_Public_List_1_String_0 = petNormalPhrases; //normalPhrases
 
             if (petPokePhrases.Count > 0)
-                __instance.pokePhrases = petPokePhrases;
+                __instance.field_Public_List_1_String_1 = petPokePhrases; //pokePhrases
 
             if (audioClips.Count > 0)
-                __instance.sounds = audioClips;
+                __instance.field_Public_List_1_AudioClip_0 = audioClips; //sounds
 
             __instance.gameObject.SetActive(true);
 
@@ -180,8 +179,8 @@ namespace VRCPlusPet
         static void SetupToggleButton(string displayText, string configName)
         {
             ExpansionKitApi.GetExpandedMenu(ExpandedMenu.UiElementsQuickMenu).AddToggleButton(displayText,
-            (bool boolVar) => MelonPrefs.SetBool(BuildInfo.Name, configName, boolVar),
-            () => MelonPrefs.GetBool(BuildInfo.Name, configName));
+            (bool boolVar) => MelonPreferences.SetEntryValue(BuildInfo.Name, configName, boolVar),
+            () => MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, configName));
         }
 
         static void SetupSprite(string fileName, string configName, ref Sprite sprite, bool specialBorder = false)
@@ -196,7 +195,7 @@ namespace VRCPlusPet
                 //poka-yoke
                 if (imageByteArray.Length < 67 || !ImageConversion.LoadImage(newTexture, imageByteArray))
                 {
-                    MelonLogger.LogError(string.Format("Option \"{0}\" | Image loading error", configName));
+                    MelonLogger.Error(string.Format("Option \"{0}\" | Image loading error", configName));
                 }
                 else
                 {
@@ -205,25 +204,25 @@ namespace VRCPlusPet
                 }
             }
             else
-                MelonLogger.LogWarning(string.Format("Option \"{0}\" | Image not found (UserData/{1}/{2})", configName, configPath, fileName));
+                MelonLogger.Warning(string.Format("Option \"{0}\" | Image not found (UserData/{1}/{2})", configName, configPath, fileName));
         }
 
         public override void OnApplicationStart()
         {
             string spaces = new string('-', 40);
-            MelonLogger.Log(spaces);
-            MelonLogger.Log("Initializing...");
+            MelonLogger.Msg(spaces);
+            MelonLogger.Msg("Initializing...");
 
-            MelonPrefs.RegisterCategory(BuildInfo.Name, BuildInfo.Name);
-            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameHideAds, true);
-            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplacePet, false);
-            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplaceBubble, false);
-            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplacePhrases, false);
-            MelonPrefs.RegisterBool(BuildInfo.Name, mlCfgNameReplaceSounds, false);
+            MelonPreferences.CreateCategory(BuildInfo.Name, BuildInfo.Name);
+            MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameHideAds, true);
+            MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplacePet, false);
+            MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplaceBubble, false);
+            MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplacePhrases, false);
+            MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplaceSounds, false);
 
             if (File.Exists(uixPath))
             {
-                MelonLogger.Log("UIExpansionKit found, creating visual settings...");
+                MelonLogger.Msg("UIExpansionKit found, creating visual settings...");
 
                 SetupToggleButton("Hide VRC+ adverts?", mlCfgNameHideAds);
                 SetupToggleButton("Replace pet image?", mlCfgNameReplacePet);
@@ -232,45 +231,45 @@ namespace VRCPlusPet
                 SetupToggleButton("Replace pet poke sounds?", mlCfgNameReplaceSounds);
             }
             else
-                MelonLogger.LogWarning("UIExpansionKit not found");
+                MelonLogger.Warning("UIExpansionKit not found");
 
-            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplacePet))
+            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameReplacePet))
             {
-                MelonLogger.Log(string.Format("Option \"{0}\" | Pet image will be replaced", mlCfgNameReplacePet));
+                MelonLogger.Msg(string.Format("Option \"{0}\" | Pet image will be replaced", mlCfgNameReplacePet));
 
                 SetupSprite("pet.png", mlCfgNameReplacePet, ref petSprite);
             }
 
-            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplaceBubble))
+            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameReplaceBubble))
             {
-                MelonLogger.Log(string.Format("Option \"{0}\" | Bubble image will be replaced", mlCfgNameReplaceBubble));
+                MelonLogger.Msg(string.Format("Option \"{0}\" | Bubble image will be replaced", mlCfgNameReplaceBubble));
 
                 SetupSprite("bubble.png", mlCfgNameReplaceBubble, ref bubbleSprite, true);
             }
 
-            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplacePhrases))
+            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameReplacePhrases))
             {
-                MelonLogger.Log(string.Format("Option \"{0}\" | Pet phrases will be replaced", mlCfgNameReplacePhrases));
+                MelonLogger.Msg(string.Format("Option \"{0}\" | Pet phrases will be replaced", mlCfgNameReplacePhrases));
                 SetupConfigFiles("normalPhrases.txt", ref petNormalPhrases);
                 SetupConfigFiles("pokePhrases.txt", ref petPokePhrases);
             }
 
-            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameReplaceSounds))
+            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameReplaceSounds))
             {
-                MelonLogger.Log(string.Format("Option \"{0}\" | Pet sounds will be replaced", mlCfgNameReplaceSounds));
+                MelonLogger.Msg(string.Format("Option \"{0}\" | Pet sounds will be replaced", mlCfgNameReplaceSounds));
 
                 foreach (string fileName in Directory.GetFiles(SetupConfigFiles("audio", ref emptyList, true), "*.*", SearchOption.TopDirectoryOnly))
                 {
                     if (fileName.Contains(".ogg") || fileName.Contains(".wav"))
                         MelonCoroutines.Start(SetupAudioFile(Path.Combine("file://", fileName)));
                     else
-                        MelonLogger.LogWarning("Option \"aud\" | File has wrong audio format (Only .ogg/.wav are supported), will be ignored");
+                        MelonLogger.Warning("Option \"aud\" | File has wrong audio format (Only .ogg/.wav are supported), will be ignored");
                 }
             }
 
-            MelonLogger.Log(spaces);
+            MelonLogger.Msg(spaces);
 
-            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameHideAds))
+            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideAds))
                 Patch(typeof(ShortcutMenu).GetMethod("Method_Private_Void_0"), GetLocalPatch("ShortcutMenuPatch"), null);
 
             Patch(typeof(VRCPlusThankYou).GetMethod("OnEnable"), GetLocalPatch("SetupMenuPetPatch"), null);
@@ -278,7 +277,7 @@ namespace VRCPlusPet
 
         public override void VRChat_OnUiManagerInit()
         {
-            if (MelonPrefs.GetBool(BuildInfo.Name, mlCfgNameHideAds))
+            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideAds))
                 InitUI();
         }
     }
