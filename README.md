@@ -50,10 +50,12 @@ Game restart needed after changing.
   > Image editing required. <br>
  
   1. Download original image: [Click me >_<](https://cdn.discordapp.com/attachments/548545237123989505/793646716779364362/ChatBubble_IMG_UI.png);
-  2. Edit the image as you want [Green version](https://media.discordapp.net/attachments/674717751662739478/813119607854202880/bubble.png);
+  2. Edit the image as you want;
   3. Enable "Replace bubble image?" in mod config;
   4. Open VRChat game folder (Steam Library -> RMB on VRChat -> Properties -> Local Files -> Browse Local Files);
   5. Drop image file to "UserData/VRCPlusPet_Config/" folder (make sure that file has name "bubble.png").
+
+  > [Green version from the screenshot](https://media.discordapp.net/attachments/674717751662739478/813119607854202880/bubble.png)
 
 <h3>How to replace Pet Phrases?</h3>
   
