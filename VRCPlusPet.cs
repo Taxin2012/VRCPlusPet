@@ -21,7 +21,7 @@ namespace VRCPlusPet
         public const string Description = "Hides VRC+ advertising, can replace default pet, his phrases, poke sounds and chat bubble.";
         public const string Author = "Taxin2012";
         public const string Company = null;
-        public const string Version = "1.0.6";
+        public const string Version = "1.0.7";
         public const string DownloadLink = "https://github.com/Taxin2012/VRCPlusPet";
     }
 
@@ -33,6 +33,9 @@ namespace VRCPlusPet
             uixPath = Path.Combine(Environment.CurrentDirectory, "Mods/UIExpansionKit.dll"),
 
             mlCfgNameHideAds = "Hide Ads",
+            mlCfgNameHideUserIconTab = "Hide Menu Icon Tab",
+            mlCfgNameHideIconCameraButton = "Hide Icon Camera Button",
+            mlCfgNameHideUserIconsButton = "Hide User Icons Button",
             mlCfgNameReplacePet = "Replace Pet",
             mlCfgNameReplaceBubble = "Replace Bubble",
             mlCfgNameReplacePhrases = "Replace Phrases",
@@ -75,7 +78,7 @@ namespace VRCPlusPet
 
                 if (childName != "Search")
                 {
-                    if (childName == "VRC+PageTab") //childName == "UserIconTab" ||
+                    if (childName == "VRC+PageTab" || (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconTab) && childName == "UserIconTab"))
                         GameObject.Destroy(childTransform.gameObject);
                     else
                         childTransform.GetComponent<LayoutElement>().preferredWidth = 250f;
@@ -83,17 +86,23 @@ namespace VRCPlusPet
             }
         }
 
-        //from VRC-Minus (bottom of the README file)
-        static bool ShortcutMenuPatch(ShortcutMenu __instance)
+        static void ShortcutMenuGOSelector(GameObject go)
         {
-            __instance.field_Public_GameObject_5?.SetActive(true); //VRCPlusThankYou
-            __instance.field_Public_GameObject_0?.SetActive(false); //UserIconButton
-            __instance.field_Public_GameObject_2?.SetActive(false); //Learn More
-            __instance.field_Public_GameObject_3?.SetActive(false); //VRCPlusBanner
-            __instance.field_Public_GameObject_4?.SetActive(false); //VRCPlusMiniBanner
-            //__instance.field_Public_GameObject_1?.SetActive(false); //userIconCameraButton
+            if ((MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideIconCameraButton) && go.name == "UserIconCameraButton") || (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconsButton) && go.name == "UserIconButton"))
+                go.SetActive(false);
+            else if (go.name == "VRCPlusThankYou")
+                go.SetActive(true);
+        }
 
-            return false;
+        //from VRC-Minus (bottom of the README file)
+        static void ShortcutMenuPatch(ShortcutMenu __instance)
+        {
+            ShortcutMenuGOSelector(__instance.field_Public_GameObject_0);
+            ShortcutMenuGOSelector(__instance.field_Public_GameObject_1);
+            ShortcutMenuGOSelector(__instance.field_Public_GameObject_2);
+            ShortcutMenuGOSelector(__instance.field_Public_GameObject_3);
+            ShortcutMenuGOSelector(__instance.field_Public_GameObject_4);
+            ShortcutMenuGOSelector(__instance.field_Public_GameObject_5);
         }
 
         static void SetupMenuPetPatch(VRCPlusThankYou __instance)
@@ -123,7 +132,7 @@ namespace VRCPlusPet
 
                 bubbleImageComponent.sprite = bubbleSprite;
             }
-            
+
             if (petSprite != null)
             {
                 if (petImageComponent == null)
@@ -195,9 +204,7 @@ namespace VRCPlusPet
 
                 //poka-yoke
                 if (imageByteArray.Length < 67 || !ImageConversion.LoadImage(newTexture, imageByteArray))
-                {
                     MelonLogger.Error(string.Format("Option \"{0}\" | Image loading error", configName));
-                }
                 else
                 {
                     sprite = Sprite.CreateSprite(newTexture, new Rect(.0f, .0f, newTexture.width, newTexture.height), new Vector2(.5f, .5f), 100f, 0, 0, specialBorder ? new Vector4(35f, 55f, 62f, 41f) : new Vector4(), false);
@@ -216,6 +223,9 @@ namespace VRCPlusPet
 
             MelonPreferences.CreateCategory(BuildInfo.Name, BuildInfo.Name);
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameHideAds, true);
+            MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameHideUserIconTab, false);
+            MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameHideIconCameraButton, false);
+            MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameHideUserIconsButton, false);
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplacePet, false);
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplaceBubble, false);
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplacePhrases, false);
@@ -225,11 +235,14 @@ namespace VRCPlusPet
             {
                 MelonLogger.Msg("UIExpansionKit found, creating visual settings...");
 
-                SetupToggleButton("Hide VRC+ adverts?", mlCfgNameHideAds);
-                SetupToggleButton("Replace pet image?", mlCfgNameReplacePet);
-                SetupToggleButton("Replace bubble image?", mlCfgNameReplaceBubble);
-                SetupToggleButton("Replace pet phrases?", mlCfgNameReplacePhrases);
-                SetupToggleButton("Replace pet poke sounds?", mlCfgNameReplaceSounds);
+                SetupToggleButton("Hide VRC+ adverts", mlCfgNameHideAds);
+                SetupToggleButton("Hide Menu Icon Tab", mlCfgNameHideUserIconTab);
+                SetupToggleButton("Hide Icon Camera Button", mlCfgNameHideIconCameraButton);
+                SetupToggleButton("Hide User Icons Button", mlCfgNameHideUserIconsButton);
+                SetupToggleButton("Replace pet image", mlCfgNameReplacePet);
+                SetupToggleButton("Replace bubble image", mlCfgNameReplaceBubble);
+                SetupToggleButton("Replace pet phrases", mlCfgNameReplacePhrases);
+                SetupToggleButton("Replace pet poke sounds", mlCfgNameReplaceSounds);
             }
             else
                 MelonLogger.Warning("UIExpansionKit not found");
@@ -268,10 +281,19 @@ namespace VRCPlusPet
                 }
             }
 
+            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconTab))
+                MelonLogger.Msg(string.Format("Option \"{0}\" | Menu Icon Tab will be hided", mlCfgNameHideUserIconTab));
+
+            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideIconCameraButton))
+                MelonLogger.Msg(string.Format("Option \"{0}\" | Icon Camera Button will be hided", mlCfgNameHideIconCameraButton));
+
+            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconsButton))
+                MelonLogger.Msg(string.Format("Option \"{0}\" | User Icons Button will be hided", mlCfgNameHideUserIconsButton));
+
             MelonLogger.Msg(spaces);
 
             if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideAds))
-                Patch(typeof(ShortcutMenu).GetMethod("Method_Private_Void_0"), GetLocalPatch("ShortcutMenuPatch"), null);
+                Patch(typeof(ShortcutMenu).GetMethod("Method_Private_Void_1"), null, GetLocalPatch("ShortcutMenuPatch"));
 
             Patch(typeof(VRCPlusThankYou).GetMethod("OnEnable"), GetLocalPatch("SetupMenuPetPatch"), null);
         }
