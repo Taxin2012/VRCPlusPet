@@ -37,7 +37,6 @@
     <Content Include="References\Assembly-CSharp.dll" />
     <Content Include="References\Il2Cppmscorlib.dll" />
     <Content Include="References\Il2CppSystem.dll" />
-    <Content Include="References\MelonLoader.ModHandler.dll" />
     <Content Include="References\REFERENCES FOLDER.txt" />
     <Content Include="References\UnhollowerBaseLib.dll" />
     <Content Include="References\UnityEngine.AudioModule.dll" />
