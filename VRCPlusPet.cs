@@ -1,5 +1,6 @@
 
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Reflection;
 using System.Collections;
@@ -11,8 +12,6 @@ using MethodBase = System.Reflection.MethodBase;
 using UnityEngine;
 using UnityEngine.UI;
 
-using UIExpansionKit.API;
-
 namespace VRCPlusPet
 {
     public static class BuildInfo
@@ -21,7 +20,7 @@ namespace VRCPlusPet
         public const string Description = "Hides VRC+ advertising, can replace default pet, his phrases, poke sounds and chat bubble.";
         public const string Author = "Taxin2012";
         public const string Company = null;
-        public const string Version = "1.0.7";
+        public const string Version = "1.0.8";
         public const string DownloadLink = "https://github.com/Taxin2012/VRCPlusPet";
     }
 
@@ -30,7 +29,6 @@ namespace VRCPlusPet
         static string
             configPath = "VRCPlusPet_Config",
             fullconfigPath = Path.Combine(MelonUtils.UserDataDirectory, configPath),
-            uixPath = Path.Combine(Environment.CurrentDirectory, "Mods/UIExpansionKit.dll"),
 
             mlCfgNameHideAds = "Hide Ads",
             mlCfgNameHideUserIconTab = "Hide Menu Icon Tab",
@@ -40,11 +38,15 @@ namespace VRCPlusPet
             mlCfgNameReplaceBubble = "Replace Bubble",
             mlCfgNameReplacePhrases = "Replace Phrases",
             mlCfgNameReplaceSounds = "Replace Sounds";
+        static bool
+            cachedCfgHideAds,
+            cachedCfgHideUserIconTab;
 
         static Il2CppSystem.Collections.Generic.List<string> petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>();
         static Il2CppSystem.Collections.Generic.List<string> emptyList = null;
         static Il2CppSystem.Collections.Generic.List<AudioClip> audioClips = new Il2CppSystem.Collections.Generic.List<AudioClip>();
+        static Dictionary<string, float> originalSizes = new Dictionary<string, float>();
         static HarmonyInstance modHarmonyInstance = HarmonyInstance.Create(BuildInfo.Name);
         static Sprite
             petSprite,
@@ -59,50 +61,89 @@ namespace VRCPlusPet
             modHarmonyInstance.Patch(TargetMethod, Prefix, Postfix);
         }
 
-        static HarmonyMethod GetLocalPatch(string name)
+        static HarmonyMethod GetLocalPatchMethod(string name)
         {
             return new HarmonyMethod(typeof(VRCPlusPet).GetMethod(name, BindingFlags.Static | BindingFlags.NonPublic));
         }
 
-        static void InitUI()
+        static void InitUI(bool firstInit = false)
         {
-            GameObject.Destroy(GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter"));
-            GameObject.Destroy(GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites"));
+            bool hideAds = MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideAds);
+            bool hideUserIconTab = MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconTab);
 
-            Transform tabTransform = GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content").transform;
-
-            for (int i = 0; i < tabTransform.childCount; i++)
+            if (firstInit || cachedCfgHideAds != hideAds || cachedCfgHideUserIconTab != hideUserIconTab)
             {
-                Transform childTransform = tabTransform.GetChild(i);
-                string childName = childTransform.name;
+                cachedCfgHideAds = hideAds;
+                hideAds = !hideAds;
 
-                if (childName != "Search")
+                cachedCfgHideUserIconTab = hideUserIconTab;
+
+                GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter")?.SetActive(hideAds);
+                GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites")?.SetActive(hideAds);
+
+                Transform tabsTransform = GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content").transform;
+
+                for (int i = 0; i < tabsTransform.childCount; i++)
                 {
-                    if (childName == "VRC+PageTab" || (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconTab) && childName == "UserIconTab"))
-                        GameObject.Destroy(childTransform.gameObject);
-                    else
-                        childTransform.GetComponent<LayoutElement>().preferredWidth = 250f;
+                    Transform childTransform = tabsTransform.GetChild(i);
+                    string childName = childTransform.name;
+
+                    if (childName != "Search")
+                    {
+                        if (childName == "VRC+PageTab")
+                            childTransform.gameObject.SetActive(hideAds);
+                        else
+                        {
+                            LayoutElement childLayoutElement = childTransform.GetComponent<LayoutElement>();
+
+                            if (childName == "UserIconTab")
+                            {
+                                bool toSet = !hideUserIconTab;
+
+                                //lol
+                                childLayoutElement.gameObject.SetActiveRecursively(toSet);
+                                childTransform.gameObject.GetComponent<UnityEngine.UI.Image>().enabled = toSet;
+                                childTransform.gameObject.GetComponent<UnityEngine.UI.LayoutElement>().enabled = toSet;
+                            }
+                            else
+                            {
+                                if (hideUserIconTab)
+                                {
+                                    if (!originalSizes.ContainsKey(childName))
+                                        originalSizes.Add(childName, childLayoutElement.preferredWidth);
+
+                                    childLayoutElement.preferredWidth = 250f;
+                                }
+                                else
+                                    childLayoutElement.preferredWidth = originalSizes.GetValueSafe(childName);
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        static void ShortcutMenuGOSelector(GameObject go)
+        static void SMElementActiveSetter(GameObject go)
         {
-            if ((MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideIconCameraButton) && go.name == "UserIconCameraButton") || (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconsButton) && go.name == "UserIconButton"))
-                go.SetActive(false);
+            if (go.name == "UserIconCameraButton")
+                go.SetActive(!MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideIconCameraButton));
+            else if (go.name == "UserIconButton")
+                go.SetActive(!MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconsButton));
             else if (go.name == "VRCPlusThankYou")
                 go.SetActive(true);
         }
 
+        public override void OnPreferencesSaved() => InitUI();
+
         //from VRC-Minus (bottom of the README file)
         static void ShortcutMenuPatch(ShortcutMenu __instance)
         {
-            ShortcutMenuGOSelector(__instance.field_Public_GameObject_0);
-            ShortcutMenuGOSelector(__instance.field_Public_GameObject_1);
-            ShortcutMenuGOSelector(__instance.field_Public_GameObject_2);
-            ShortcutMenuGOSelector(__instance.field_Public_GameObject_3);
-            ShortcutMenuGOSelector(__instance.field_Public_GameObject_4);
-            ShortcutMenuGOSelector(__instance.field_Public_GameObject_5);
+            SMElementActiveSetter(__instance.field_Public_GameObject_0);
+            SMElementActiveSetter(__instance.field_Public_GameObject_1);
+            SMElementActiveSetter(__instance.field_Public_GameObject_2);
+            SMElementActiveSetter(__instance.field_Public_GameObject_3);
+            SMElementActiveSetter(__instance.field_Public_GameObject_4);
+            SMElementActiveSetter(__instance.field_Public_GameObject_5);
         }
 
         static void SetupMenuPetPatch(VRCPlusThankYou __instance)
@@ -153,7 +194,7 @@ namespace VRCPlusPet
             audioClips.Add(audioClip);
         }
 
-        static string SetupConfigFiles(string fileName, ref Il2CppSystem.Collections.Generic.List<string> phrasesArray, bool isDirectory = false)
+        static string SetupConfigFile(string fileName, ref Il2CppSystem.Collections.Generic.List<string> phrasesArray, bool isDirectory = false)
         {
             if (!Directory.Exists(fullconfigPath))
                 Directory.CreateDirectory(fullconfigPath);
@@ -186,16 +227,9 @@ namespace VRCPlusPet
             }
         }
 
-        static void SetupToggleButton(string displayText, string configName)
-        {
-            ExpansionKitApi.GetExpandedMenu(ExpandedMenu.UiElementsQuickMenu).AddToggleButton(displayText,
-            (bool boolVar) => MelonPreferences.SetEntryValue(BuildInfo.Name, configName, boolVar),
-            () => MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, configName));
-        }
-
         static void SetupSprite(string fileName, string configName, ref Sprite sprite, bool specialBorder = false)
         {
-            string texturePath = SetupConfigFiles(fileName, ref emptyList);
+            string texturePath = SetupConfigFile(fileName, ref emptyList);
 
             if (texturePath != null)
             {
@@ -222,8 +256,13 @@ namespace VRCPlusPet
             MelonLogger.Msg("Initializing...");
 
             MelonPreferences.CreateCategory(BuildInfo.Name, BuildInfo.Name);
+
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameHideAds, true);
+            cachedCfgHideAds = MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideAds);
+
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameHideUserIconTab, false);
+            cachedCfgHideUserIconTab = MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconTab);
+
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameHideIconCameraButton, false);
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameHideUserIconsButton, false);
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplacePet, false);
@@ -231,57 +270,40 @@ namespace VRCPlusPet
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplacePhrases, false);
             MelonPreferences.CreateEntry(BuildInfo.Name, mlCfgNameReplaceSounds, false);
 
-            if (File.Exists(uixPath))
-            {
-                MelonLogger.Msg("UIExpansionKit found, creating visual settings...");
-
-                SetupToggleButton("Hide VRC+ adverts", mlCfgNameHideAds);
-                SetupToggleButton("Hide Menu Icon Tab", mlCfgNameHideUserIconTab);
-                SetupToggleButton("Hide Icon Camera Button", mlCfgNameHideIconCameraButton);
-                SetupToggleButton("Hide User Icons Button", mlCfgNameHideUserIconsButton);
-                SetupToggleButton("Replace pet image", mlCfgNameReplacePet);
-                SetupToggleButton("Replace bubble image", mlCfgNameReplaceBubble);
-                SetupToggleButton("Replace pet phrases", mlCfgNameReplacePhrases);
-                SetupToggleButton("Replace pet poke sounds", mlCfgNameReplaceSounds);
-            }
-            else
-                MelonLogger.Warning("UIExpansionKit not found");
+            if (!MelonHandler.Mods.Any(mod => mod.Info.Name == "UI Expansion Kit"))
+                MelonLogger.Warning("UIExpansionKit not found, visual preferences cannot be accessed");
 
             if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameReplacePet))
             {
                 MelonLogger.Msg(string.Format("Option \"{0}\" | Pet image will be replaced", mlCfgNameReplacePet));
-
                 SetupSprite("pet.png", mlCfgNameReplacePet, ref petSprite);
             }
 
             if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameReplaceBubble))
             {
                 MelonLogger.Msg(string.Format("Option \"{0}\" | Bubble image will be replaced", mlCfgNameReplaceBubble));
-
                 SetupSprite("bubble.png", mlCfgNameReplaceBubble, ref bubbleSprite, true);
             }
 
             if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameReplacePhrases))
             {
                 MelonLogger.Msg(string.Format("Option \"{0}\" | Pet phrases will be replaced", mlCfgNameReplacePhrases));
-                SetupConfigFiles("normalPhrases.txt", ref petNormalPhrases);
-                SetupConfigFiles("pokePhrases.txt", ref petPokePhrases);
+                SetupConfigFile("normalPhrases.txt", ref petNormalPhrases);
+                SetupConfigFile("pokePhrases.txt", ref petPokePhrases);
             }
 
             if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameReplaceSounds))
             {
                 MelonLogger.Msg(string.Format("Option \"{0}\" | Pet sounds will be replaced", mlCfgNameReplaceSounds));
 
-                foreach (string fileName in Directory.GetFiles(SetupConfigFiles("audio", ref emptyList, true), "*.*", SearchOption.TopDirectoryOnly))
-                {
+                foreach (string fileName in Directory.GetFiles(SetupConfigFile("audio", ref emptyList, true), "*.*", SearchOption.TopDirectoryOnly))
                     if (fileName.Contains(".ogg") || fileName.Contains(".wav"))
                         MelonCoroutines.Start(SetupAudioFile(Path.Combine("file://", fileName)));
                     else
                         MelonLogger.Warning("Option \"aud\" | File has wrong audio format (Only .ogg/.wav are supported), will be ignored");
-                }
             }
 
-            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconTab))
+            if (cachedCfgHideUserIconTab)
                 MelonLogger.Msg(string.Format("Option \"{0}\" | Menu Icon Tab will be hided", mlCfgNameHideUserIconTab));
 
             if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideIconCameraButton))
@@ -292,16 +314,14 @@ namespace VRCPlusPet
 
             MelonLogger.Msg(spaces);
 
-            if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideAds))
-                Patch(typeof(ShortcutMenu).GetMethod("Method_Private_Void_1"), null, GetLocalPatch("ShortcutMenuPatch"));
-
-            Patch(typeof(VRCPlusThankYou).GetMethod("OnEnable"), GetLocalPatch("SetupMenuPetPatch"), null);
+            Patch(typeof(ShortcutMenu).GetMethod("Method_Private_Void_1"), null, GetLocalPatchMethod("ShortcutMenuPatch"));
+            Patch(typeof(VRCPlusThankYou).GetMethod("OnEnable"), GetLocalPatchMethod("SetupMenuPetPatch"), null);
         }
 
         public override void VRChat_OnUiManagerInit()
         {
             if (MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideAds))
-                InitUI();
+                InitUI(true);
         }
     }
 }
