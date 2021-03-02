@@ -56,15 +56,11 @@ namespace VRCPlusPet
             bubbleImageComponent,
             petImageComponent;
 
-        static void Patch(MethodBase TargetMethod, HarmonyMethod Prefix, HarmonyMethod Postfix)
-        {
-            modHarmonyInstance.Patch(TargetMethod, Prefix, Postfix);
-        }
+        public override void OnPreferencesSaved() => InitUI();
 
-        static HarmonyMethod GetLocalPatchMethod(string name)
-        {
-            return new HarmonyMethod(typeof(VRCPlusPet).GetMethod(name, BindingFlags.Static | BindingFlags.NonPublic));
-        }
+        static void Patch(MethodBase TargetMethod, HarmonyMethod Prefix, HarmonyMethod Postfix) => modHarmonyInstance.Patch(TargetMethod, Prefix, Postfix);
+
+        static HarmonyMethod GetLocalPatchMethod(string name) => new HarmonyMethod(typeof(VRCPlusPet).GetMethod(name, BindingFlags.Static | BindingFlags.NonPublic));
 
         static void InitUI(bool firstInit = false)
         {
@@ -78,7 +74,7 @@ namespace VRCPlusPet
 
                 cachedCfgHideUserIconTab = hideUserIconTab;
 
-                GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter")?.SetActive(hideAds);
+                GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter").SetActiveRecursively(hideAds);
                 GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites")?.SetActive(hideAds);
 
                 Transform tabsTransform = GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content").transform;
@@ -98,12 +94,13 @@ namespace VRCPlusPet
 
                             if (childName == "UserIconTab")
                             {
+                                GameObject tabGO = childLayoutElement.gameObject;
                                 bool toSet = !hideUserIconTab;
 
                                 //lol
-                                childLayoutElement.gameObject.SetActiveRecursively(toSet);
-                                childTransform.gameObject.GetComponent<UnityEngine.UI.Image>().enabled = toSet;
-                                childTransform.gameObject.GetComponent<UnityEngine.UI.LayoutElement>().enabled = toSet;
+                                tabGO.SetActiveRecursively(toSet);
+                                tabGO.GetComponent<Image>().enabled = toSet;
+                                tabGO.GetComponent<LayoutElement>().enabled = toSet;
                             }
                             else
                             {
@@ -132,8 +129,6 @@ namespace VRCPlusPet
             else if (go.name == "VRCPlusThankYou")
                 go.SetActive(true);
         }
-
-        public override void OnPreferencesSaved() => InitUI();
 
         //from VRC-Minus (bottom of the README file)
         static void ShortcutMenuPatch(ShortcutMenu __instance)
