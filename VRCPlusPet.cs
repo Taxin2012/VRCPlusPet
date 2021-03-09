@@ -20,7 +20,7 @@ namespace VRCPlusPet
         public const string Description = "Hides VRC+ advertising, can replace default pet, his phrases, poke sounds and chat bubble.";
         public const string Author = "Taxin2012";
         public const string Company = null;
-        public const string Version = "1.0.8";
+        public const string Version = "1.0.9";
         public const string DownloadLink = "https://github.com/Taxin2012/VRCPlusPet";
     }
 
@@ -126,8 +126,16 @@ namespace VRCPlusPet
                 go.SetActive(!MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideIconCameraButton));
             else if (go.name == "UserIconButton")
                 go.SetActive(!MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideUserIconsButton));
-            else if (go.name == "VRCPlusThankYou")
-                go.SetActive(true);
+            else if (go.name == "VRCPlusThankYou" || go.name == "VRCPlusBanner" || go.name == "VRCPlusMiniBanner")
+            {
+                bool hideAds = MelonPreferences.GetEntryValue<bool>(BuildInfo.Name, mlCfgNameHideAds);
+
+                if (hideAds)
+                    if (go.name == "VRCPlusThankYou")
+                        go.SetActive(hideAds);
+                    else if (go.name == "VRCPlusBanner" || go.name == "VRCPlusMiniBanner")
+                        go.SetActive(!hideAds);
+            }
         }
 
         //from VRC-Minus (bottom of the README file)
