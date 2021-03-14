@@ -20,7 +20,7 @@ namespace VRCPlusPet
         public const string Description = "Hides VRC+ advertising, can replace default pet, his phrases, poke sounds and chat bubble.";
         public const string Author = "Taxin2012";
         public const string Company = null;
-        public const string Version = "1.0.9";
+        public const string Version = "1.1.0";
         public const string DownloadLink = "https://github.com/Taxin2012/VRCPlusPet";
     }
 
@@ -42,9 +42,10 @@ namespace VRCPlusPet
             cachedCfgHideAds,
             cachedCfgHideUserIconTab;
 
-        static Il2CppSystem.Collections.Generic.List<string> petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>();
-        static Il2CppSystem.Collections.Generic.List<string> petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>();
-        static Il2CppSystem.Collections.Generic.List<string> emptyList = null;
+        static Il2CppSystem.Collections.Generic.List<string>
+            petNormalPhrases = new Il2CppSystem.Collections.Generic.List<string>(),
+            petPokePhrases = new Il2CppSystem.Collections.Generic.List<string>(),
+            emptyList = null;
         static Il2CppSystem.Collections.Generic.List<AudioClip> audioClips = new Il2CppSystem.Collections.Generic.List<AudioClip>();
         static Dictionary<string, float> originalSizes = new Dictionary<string, float>();
         static HarmonyInstance modHarmonyInstance = HarmonyInstance.Create(BuildInfo.Name);
@@ -188,7 +189,7 @@ namespace VRCPlusPet
 
         static IEnumerator SetupAudioFile(string filePath)
         {
-            WWW www = new WWW(filePath);
+            WWW www = new WWW(filePath, null, new Il2CppSystem.Collections.Generic.Dictionary<string, string>());
             yield return www;
 
             AudioClip audioClip = www.GetAudioClip();
