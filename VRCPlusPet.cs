@@ -20,7 +20,7 @@ namespace VRCPlusPet
         public const string Description = "Hides VRC+ advertising, can replace default pet, his phrases, poke sounds and chat bubble.";
         public const string Author = "Taxin2012";
         public const string Company = null;
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
         public const string DownloadLink = "https://github.com/Taxin2012/VRCPlusPet";
     }
 
@@ -76,7 +76,7 @@ namespace VRCPlusPet
                 cachedCfgHideUserIconTab = hideUserIconTab;
 
                 GameObject.Find("UserInterface/MenuContent/Screens/UserInfo/User Panel/Supporter").SetActiveRecursively(hideAds);
-                GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites")?.SetActive(hideAds);
+                GameObject.Find("UserInterface/MenuContent/Screens/Avatar/Vertical Scroll View/Viewport/Content/Favorite Avatar List/GetMoreFavorites")?.SetActiveRecursively(hideAds);
 
                 Transform tabsTransform = GameObject.Find("UserInterface/MenuContent/Backdrop/Header/Tabs/ViewPort/Content").transform;
 
@@ -318,7 +318,7 @@ namespace VRCPlusPet
 
             MelonLogger.Msg(spaces);
 
-            Patch(typeof(ShortcutMenu).GetMethod("Method_Private_Void_1"), null, GetLocalPatchMethod("ShortcutMenuPatch"));
+            Patch(typeof(ShortcutMenu).GetMethod("Method_Private_Void_0"), null, GetLocalPatchMethod("ShortcutMenuPatch"));
             Patch(typeof(VRCPlusThankYou).GetMethod("OnEnable"), GetLocalPatchMethod("SetupMenuPetPatch"), null);
         }
 
