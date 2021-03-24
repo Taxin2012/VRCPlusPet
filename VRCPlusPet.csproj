@@ -45,6 +45,7 @@
     <Content Include="References\UnityEngine.ImageConversionModule.dll" />
     <Content Include="References\UnityEngine.UI.dll" />
     <Content Include="References\UnityEngine.UnityWebRequestWWWModule.dll" />
+    <Content Include="References\VRCCore-Standalone.dll" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=3.7.1.6, Culture=neutral, processorArchitecture=MSIL">
@@ -93,6 +94,10 @@
     <Reference Include="UnityEngine.UnityWebRequestWWWModule, Version=3.7.1.6, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="VRCCore-Standalone, Version=3.7.1.6, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\VRCCore-Standalone.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
