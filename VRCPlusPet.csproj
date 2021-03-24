@@ -28,6 +28,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="BadGoDisabler.cs" />
+    <Compile Include="Patches.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="VRCPlusPet.cs" />
   </ItemGroup>
   <ItemGroup>
