@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿
+using System;
+using System.Reflection;
 using MelonLoader;
 
 [assembly: AssemblyTitle(VRCPlusPet.BuildInfo.Description)]
@@ -13,4 +15,4 @@ using MelonLoader;
 [assembly: MelonOptionalDependencies("UIExpansionKit")]
 
 [assembly: MelonGame("VRChat", "VRChat")]
-[assembly: MelonColor(System.ConsoleColor.DarkCyan)]
+[assembly: MelonColor(ConsoleColor.DarkCyan)]
