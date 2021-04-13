@@ -13,3 +13,4 @@ using MelonLoader;
 [assembly: MelonOptionalDependencies("UIExpansionKit")]
 
 [assembly: MelonGame("VRChat", "VRChat")]
+[assembly: MelonColor(System.ConsoleColor.DarkCyan)]
